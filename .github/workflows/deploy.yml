@@ -21,7 +21,7 @@ jobs:
           ssh-private-key: ${{ secrets.SYDANI_WEB_SSH_PRIVATE_KEY }}
 
       - name: Add VPS to known hosts
-        run: ssh-keyscan -H 8144.76.42.183 >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H 144.76.42.183 >> ~/.ssh/known_hosts
 
       - name: Set deployment path
         run: |
@@ -36,7 +36,7 @@ jobs:
           echo "Deploying to: $DEPLOY_PATH"
 
       - name: Create deployment directory on server
-        run: ssh -o StrictHostKeyChecking=no root@8144.76.42.183 "mkdir -p $DEPLOY_PATH"
+        run: ssh -o StrictHostKeyChecking=no root@144.76.42.183 "mkdir -p $DEPLOY_PATH"
 
       - name: Copy source code to server
         run: |
@@ -50,8 +50,8 @@ jobs:
             --exclude 'Dockerfile' \
             --exclude 'deploy.sh' \
             --exclude '.env' \
-            ./ root@8144.76.42.183:$DEPLOY_PATH/
+            ./ root@144.76.42.183:$DEPLOY_PATH/
 
       - name: Build and deploy on server
         run: |
-          ssh -o StrictHostKeyChecking=no root@8144.76.42.183 "cd $DEPLOY_PATH && bash ./deploy.sh"
+          ssh -o StrictHostKeyChecking=no root@144.76.42.183 "cd $DEPLOY_PATH && bash ./deploy.sh"
