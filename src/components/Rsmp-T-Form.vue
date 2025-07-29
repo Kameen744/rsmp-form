@@ -828,11 +828,11 @@ body {
   justify-content: center;
   align-items: flex-start; /* Align to top to see full form */
   min-height: 100vh;
-  padding: 2rem;
+  padding: 1rem;
 }
 .form-container {
   background-color: white;
-  padding: 3rem;
+  padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   width: 100%;
