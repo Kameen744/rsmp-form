@@ -1,7 +1,8 @@
 <template>
-  <div class="form-container">
-    <!-- Step Indicator -->
-    <!-- <div class="step-indicator-container">
+  <div>
+    <div class="form-container">
+      <!-- Step Indicator -->
+      <!-- <div class="step-indicator-container">
       <div class="step-indicator-line"></div>
       <div
         class="step"
@@ -35,27 +36,27 @@
       >
       <div class="step" :class="{ active: currentStep === 7 }">7</div>
     </div> -->
-    <div class="progress mb-4" style="height: 25px">
-      <div
-        class="progress-bar"
-        role="progressbar"
-        :style="{ width: progress + '%' }"
-        :aria-valuenow="progress"
-        aria-valuemin="0"
-        aria-valuemax="100"
-      >
-        Step {{ currentStep }} of {{ totalSteps }}
+      <div class="progress mb-4" style="height: 25px">
+        <div
+          class="progress-bar"
+          role="progressbar"
+          :style="{ width: progress + '%' }"
+          :aria-valuenow="progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          {{ currentStep }} of {{ totalSteps }}
+        </div>
       </div>
-    </div>
 
-    <form @submit.prevent="submitForm">
-      <!-- Step 1: Welcome -->
-      <div
-        class="form-step welcome-step"
-        :class="{ active: currentStep === 1 }"
-      >
-        <h2 class="text-center mb-4">PARTNER RESOURCE MAPPING FORM</h2>
-        <!-- <p
+      <form @submit.prevent="submitForm">
+        <!-- Step 1: Welcome -->
+        <div
+          class="form-step welcome-step"
+          :class="{ active: currentStep === 1 }"
+        >
+          <h2 class="text-center mb-4">PARTNER RESOURCE MAPPING FORM</h2>
+          <!-- <p
           >In line with Government’s plans for a successful integrated MR
           campaign, Sydani Group has been engaged to conduct a Partners’
           Resource Mapping to ensure coordinated planning, equitable resource
@@ -63,492 +64,504 @@
           are conducting a comprehensive mapping of Government and Partner
           support across all levels.
         </p> -->
-        <p
-          >This form has been developed to document your organization’s role,
-          scope of support, planned activities, and geographical areas of
-          intervention during the integrated campaign. The information you
-          provide will be used to strengthen coordination, minimize duplication,
-          identify resource gaps, and promote accountability throughout the
-          campaign lifecycle.</p
-        >
-        <p><strong>Kindly note: </strong></p>
-        <ul>
-          <li
-            >Participation in this exercise is voluntary and non-binding however
-            it is in your best interest to participate
-          </li>
-          <li
-            >Please complete all sections of the form with clarity and accuracy
-            to support transparent and evidence-informed planning
-          </li>
-          <li
-            >The information provided will be treated with confidentiality and
-            used solely for campaign coordination and planning purposes
-          </li>
-        </ul>
-      </div>
+          <p
+            >This form has been developed to document your organization’s role,
+            scope of support, planned activities, and geographical areas of
+            intervention during the integrated campaign. The information you
+            provide will be used to strengthen coordination, minimize
+            duplication, identify resource gaps, and promote accountability
+            throughout the campaign lifecycle.</p
+          >
+          <p><strong>Kindly note: </strong></p>
+          <ul>
+            <li
+              >Participation in this exercise is voluntary and non-binding
+              however it is in your best interest to participate
+            </li>
+            <li
+              >Please complete all sections of the form with clarity and
+              accuracy to support transparent and evidence-informed planning
+            </li>
+            <li
+              >The information provided will be treated with confidentiality and
+              used solely for campaign coordination and planning purposes
+            </li>
+          </ul>
+        </div>
 
-      <!-- Step 2: Basic Information -->
-      <div class="form-step" :class="{ active: currentStep === 2 }">
-        <h4>Step 2: Respondent & Organization Details</h4>
-        <div class="mb-3">
-          <label for="Name_of_Respondent" class="form-label"
-            >Name of Respondent</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="Name_of_Respondent"
-            v-model="formData.Name_of_Respondent"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="Designation_of_respondent" class="form-label"
-            >Designation of Respondent</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="Designation_of_respondent"
-            v-model="formData.Designation_of_respondent"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="Name_of_Organization_Agency" class="form-label"
-            >Name of Organization/Agency</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="Name_of_Organization_Agency"
-            v-model="formData.Name_of_Organization_Agency"
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Type of Organization/Agency</label>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="Type_of_Organization_Agency"
-              id="donor"
-              value="Donor"
-              v-model="formData.Type_of_Organization_Agency"
-            />
-            <label class="form-check-label" for="donor">Donor</label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="Type_of_Organization_Agency"
-              id="implementing"
-              value="Implementing Partner"
-              v-model="formData.Type_of_Organization_Agency"
-            />
-            <label class="form-check-label" for="implementing"
-              >Implementing Partner</label
-            >
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="Type_of_Organization_Agency"
-              id="government"
-              value="Government"
-              v-model="formData.Type_of_Organization_Agency"
-            />
-            <label class="form-check-label" for="government">Government</label>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3: Support Details -->
-      <div class="form-step" :class="{ active: currentStep === 3 }">
-        <h4>Step 3: Support Details</h4>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label for="Start_date_of_support" class="form-label"
-              >Start Date of Support</label
+        <!-- Step 2: Basic Information -->
+        <div class="form-step" :class="{ active: currentStep === 2 }">
+          <h4>Step 2: Respondent & Organization Details</h4>
+          <div class="mb-3">
+            <label for="Name_of_Respondent" class="form-label"
+              >Name of Respondent</label
             >
             <input
-              type="date"
+              type="text"
               class="form-control"
-              id="Start_date_of_support"
-              v-model="formData.Start_date_of_support"
+              id="Name_of_Respondent"
+              v-model="formData.Name_of_Respondent"
             />
           </div>
-          <div class="col-md-6 mb-3">
-            <label for="End_date_of_support" class="form-label"
-              >End Date of Support</label
+          <div class="mb-3">
+            <label for="Designation_of_respondent" class="form-label"
+              >Designation of Respondent</label
             >
             <input
-              type="date"
+              type="text"
               class="form-control"
-              id="End_date_of_support"
-              v-model="formData.End_date_of_support"
+              id="Designation_of_respondent"
+              v-model="formData.Designation_of_respondent"
             />
           </div>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Status of Support</label>
-          <select class="form-select" v-model="formData.Status_of_support">
-            <option>Not started</option>
-            <option>In Progress</option>
-            <option>Completed</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Level of Support</label>
-          <div class="form-check">
+          <div class="mb-3">
+            <label for="Name_of_Organization_Agency" class="form-label"
+              >Name of Organization/Agency</label
+            >
             <input
-              class="form-check-input"
-              type="checkbox"
-              value="National"
-              id="national"
-              v-model="formData.Level_of_support"
+              type="text"
+              class="form-control"
+              id="Name_of_Organization_Agency"
+              v-model="formData.Name_of_Organization_Agency"
             />
-            <label class="form-check-label" for="national">National</label>
           </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              value="State"
-              id="state"
-              v-model="formData.Level_of_support"
-            />
-            <label class="form-check-label" for="state">State</label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              value="LGA"
-              id="lga"
-              v-model="formData.Level_of_support"
-            />
-            <label class="form-check-label" for="lga">LGA</label>
+          <div class="mb-3">
+            <label class="form-label">Type of Organization/Agency</label>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="Type_of_Organization_Agency"
+                id="donor"
+                value="Donor"
+                v-model="formData.Type_of_Organization_Agency"
+              />
+              <label class="form-check-label" for="donor">Donor</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="Type_of_Organization_Agency"
+                id="implementing"
+                value="Implementing Partner"
+                v-model="formData.Type_of_Organization_Agency"
+              />
+              <label class="form-check-label" for="implementing"
+                >Implementing Partner</label
+              >
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="Type_of_Organization_Agency"
+                id="government"
+                value="Government"
+                v-model="formData.Type_of_Organization_Agency"
+              />
+              <label class="form-check-label" for="government"
+                >Government</label
+              >
+            </div>
           </div>
         </div>
-        <div v-if="formData.Level_of_support.includes('State')" class="mb-3">
-          <label class="form-label">States Supported</label>
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Enter states, comma separated"
-            @change="updateStates"
-          />
-        </div>
-        <div v-if="formData.Level_of_support.includes('LGA')" class="mb-3">
-          <label class="form-label"
-            >LGAs Supported (format: State,LGA; State,LGA)</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            placeholder="e.g., Kaduna,Zaria; Lagos,Ikeja"
-            @change="updateLGAs"
-          />
-        </div>
-      </div>
 
-      <!-- Step 4: Campaign Focus -->
-      <div class="form-step" :class="{ active: currentStep === 4 }">
-        <h4>Step 4: Campaign Focus</h4>
-        <div class="mb-3">
-          <label class="form-label">Select Campaign Focus Areas</label>
+        <!-- Step 3: Support Details -->
+        <div class="form-step" :class="{ active: currentStep === 3 }">
+          <h4>Step 3: Support Details</h4>
           <div class="row">
-            <div
-              class="col-md-6"
-              v-for="focus in campaignFocusOptions"
-              :key="focus"
+            <div class="col-md-6 mb-3">
+              <label for="Start_date_of_support" class="form-label"
+                >Start Date of Support</label
+              >
+              <input
+                type="date"
+                class="form-control"
+                id="Start_date_of_support"
+                v-model="formData.Start_date_of_support"
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="End_date_of_support" class="form-label"
+                >End Date of Support</label
+              >
+              <input
+                type="date"
+                class="form-control"
+                id="End_date_of_support"
+                v-model="formData.End_date_of_support"
+              />
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Status of Support</label>
+            <select class="form-select" v-model="formData.Status_of_support">
+              <option>Not started</option>
+              <option>In Progress</option>
+              <option>Completed</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Level of Support</label>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value="National"
+                id="national"
+                v-model="formData.Level_of_support"
+              />
+              <label class="form-check-label" for="national">National</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value="State"
+                id="state"
+                v-model="formData.Level_of_support"
+              />
+              <label class="form-check-label" for="state">State</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value="LGA"
+                id="lga"
+                v-model="formData.Level_of_support"
+              />
+              <label class="form-check-label" for="lga">LGA</label>
+            </div>
+          </div>
+          <div v-if="formData.Level_of_support.includes('State')" class="mb-3">
+            <label class="form-label">States Supported</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter states, comma separated"
+              @change="updateStates"
+            />
+          </div>
+          <div v-if="formData.Level_of_support.includes('LGA')" class="mb-3">
+            <label class="form-label"
+              >LGAs Supported (format: State,LGA; State,LGA)</label
             >
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  :value="focus"
-                  :id="focus.toLowerCase()"
-                  v-model="formData.Campaign_Focus"
-                />
-                <label class="form-check-label" :for="focus.toLowerCase()">{{
-                  focus
-                }}</label>
-              </div>
-            </div>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="e.g., Kaduna,Zaria; Lagos,Ikeja"
+              @change="updateLGAs"
+            />
           </div>
         </div>
-        <div class="mb-3">
-          <label for="Campaign_Focus_Other" class="form-label"
-            >Other (Please specify)</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="Campaign_Focus_Other"
-            v-model="formData.Campaign_Focus_Other"
-          />
-        </div>
-      </div>
 
-      <!-- Step 5: Type of Support -->
-      <div class="form-step" :class="{ active: currentStep === 5 }">
-        <h4>Step 5: Type of Support</h4>
-        <div
-          v-for="(support, index) in typeOfSupportOptions"
-          :key="index"
-          class="card"
-        >
-          <div class="card-body">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                :id="'support_' + index"
-                @change="toggleSupport(support.name)"
-              />
-              <label class="form-check-label h5" :for="'support_' + index">{{
-                support.name
-              }}</label>
-            </div>
-            <div v-if="isSupportSelected(support.name)" class="mt-3">
-              <div v-if="support.name === 'Technical Support'">
-                <div class="form-check form-switch mb-2">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    role="switch"
-                    id="personnel_deployed"
-                    v-model="getSupport('Technical Support').personnel_deployed"
-                  />
-                  <label class="form-check-label" for="personnel_deployed"
-                    >Was any personnel deployed?</label
-                  >
-                </div>
-                <div v-if="getSupport('Technical Support').personnel_deployed">
-                  <div class="mb-2">
-                    <label for="number_of_personnel" class="form-label"
-                      >Number of Personnel</label
-                    >
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="number_of_personnel"
-                      v-model.number="
-                        getSupport('Technical Support').number_of_personnel
-                      "
-                    />
-                  </div>
-                  <div>
-                    <label class="form-label"
-                      >Deployment States (comma separated)</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      @change="updateDeploymentStates"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div v-if="support.name === 'Funding'">
-                <label class="form-label"
-                  >Organizations Funded (comma separated)</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  @change="updateFundedOrgs"
-                />
-              </div>
-              <div v-if="support.name === 'Provision of Commodities'">
-                <label class="form-label"
-                  >Commodities Supplied (comma separated)</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  @change="updateCommodities"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="mb-3 mt-4">
-          <label for="Who_is_the_Funder_of_your_project" class="form-label"
-            >Who is the Funder of your project?</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="Who_is_the_Funder_of_your_project"
-            v-model="formData.Who_is_the_Funder_of_your_project"
-          />
-        </div>
-      </div>
-
-      <!-- Step 6: Thematic Areas -->
-      <div class="form-step" :class="{ active: currentStep === 6 }">
-        <h4>Step 6: Thematic Areas Supported</h4>
-        <div
-          v-for="(theme, themeIndex) in thematicAreasOptions"
-          :key="themeIndex"
-          class="card"
-        >
-          <div class="card-header">
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                :id="'theme_' + themeIndex"
-                @change="toggleThematicArea(theme.area)"
-              />
-              <label class="form-check-label h6" :for="'theme_' + themeIndex">{{
-                theme.area
-              }}</label>
-            </div>
-          </div>
-          <div v-if="isThematicAreaSelected(theme.area)" class="card-body">
+        <!-- Step 4: Campaign Focus -->
+        <div class="form-step" :class="{ active: currentStep === 4 }">
+          <h4>Step 4: Campaign Focus</h4>
+          <div class="mb-3">
+            <label class="form-label">Select Campaign Focus Areas</label>
             <div class="row">
               <div
                 class="col-md-6"
-                v-for="(sub, subIndex) in theme.sub_areas"
-                :key="subIndex"
+                v-for="focus in campaignFocusOptions"
+                :key="focus"
               >
                 <div class="form-check">
                   <input
                     class="form-check-input"
                     type="checkbox"
-                    :value="sub"
-                    :id="'sub_' + themeIndex + '_' + subIndex"
-                    v-model="getThematicArea(theme.area).sub_areas"
+                    :value="focus"
+                    :id="focus.toLowerCase()"
+                    v-model="formData.Campaign_Focus"
                   />
-                  <label
-                    class="form-check-label"
-                    :for="'sub_' + themeIndex + '_' + subIndex"
-                    >{{ sub.replace("Other: ", "") }}</label
-                  >
+                  <label class="form-check-label" :for="focus.toLowerCase()">{{
+                    focus
+                  }}</label>
                 </div>
-                <input
-                  v-if="sub.startsWith('Other:')"
-                  type="text"
-                  class="form-control form-control-sm mt-1"
-                  placeholder="Please specify"
-                  @change="updateThematicOther($event, theme.area, sub)"
-                />
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Step 7: KPIs & Collaboration -->
-      <div class="form-step" :class="{ active: currentStep === 7 }">
-        <h4>Step 7: KPIs & Collaboration</h4>
-        <div class="mb-3">
-          <label for="Key_Performance_Indicators" class="form-label"
-            >Key Performance Indicators (KPIs)</label
-          >
-          <textarea
-            class="form-control"
-            id="Key_Performance_Indicators"
-            rows="4"
-            v-model="formData.Key_Performance_Indicators"
-            placeholder="e.g., Number of States that have released counterpart funding..."
-          ></textarea>
-        </div>
-        <div class="mb-3">
-          <label class="form-label"
-            >Are you collaborating with any other partners?</label
-          >
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="collaboration"
-              id="collab_yes"
-              value="Yes"
-              v-model="formData.Are_you_collaborating_with_any_other_partners"
-            />
-            <label class="form-check-label" for="collab_yes">Yes</label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="collaboration"
-              id="collab_no"
-              value="No"
-              v-model="formData.Are_you_collaborating_with_any_other_partners"
-            />
-            <label class="form-check-label" for="collab_no">No</label>
-          </div>
-        </div>
-        <div
-          v-if="
-            formData.Are_you_collaborating_with_any_other_partners === 'Yes'
-          "
-          class="mb-3"
-        >
-          <label class="form-label">List the Partners</label>
-          <div class="row">
-            <div
-              class="col-md-4"
-              v-for="partner in partnerOptions"
-              :key="partner"
+          <div class="mb-3">
+            <label for="Campaign_Focus_Other" class="form-label"
+              >Other (Please specify)</label
             >
+            <input
+              type="text"
+              class="form-control"
+              id="Campaign_Focus_Other"
+              v-model="formData.Campaign_Focus_Other"
+            />
+          </div>
+        </div>
+
+        <!-- Step 5: Type of Support -->
+        <div class="form-step" :class="{ active: currentStep === 5 }">
+          <h4>Step 5: Type of Support</h4>
+          <div
+            v-for="(support, index) in typeOfSupportOptions"
+            :key="index"
+            class="card"
+          >
+            <div class="card-body">
               <div class="form-check">
                 <input
                   class="form-check-input"
                   type="checkbox"
-                  :value="partner"
-                  :id="partner.toLowerCase()"
-                  v-model="formData.List_the_Partners"
+                  :id="'support_' + index"
+                  @change="toggleSupport(support.name)"
                 />
-                <label class="form-check-label" :for="partner.toLowerCase()">{{
-                  partner
+                <label class="form-check-label h5" :for="'support_' + index">{{
+                  support.name
                 }}</label>
+              </div>
+              <div v-if="isSupportSelected(support.name)" class="mt-3">
+                <div v-if="support.name === 'Technical Support'">
+                  <div class="form-check form-switch mb-2">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      role="switch"
+                      id="personnel_deployed"
+                      v-model="
+                        getSupport('Technical Support').personnel_deployed
+                      "
+                    />
+                    <label class="form-check-label" for="personnel_deployed"
+                      >Was any personnel deployed?</label
+                    >
+                  </div>
+                  <div
+                    v-if="getSupport('Technical Support').personnel_deployed"
+                  >
+                    <div class="mb-2">
+                      <label for="number_of_personnel" class="form-label"
+                        >Number of Personnel</label
+                      >
+                      <input
+                        type="number"
+                        class="form-control"
+                        id="number_of_personnel"
+                        v-model.number="
+                          getSupport('Technical Support').number_of_personnel
+                        "
+                      />
+                    </div>
+                    <div>
+                      <label class="form-label"
+                        >Deployment States (comma separated)</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        @change="updateDeploymentStates"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div v-if="support.name === 'Funding'">
+                  <label class="form-label"
+                    >Organizations Funded (comma separated)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    @change="updateFundedOrgs"
+                  />
+                </div>
+                <div v-if="support.name === 'Provision of Commodities'">
+                  <label class="form-label"
+                    >Commodities Supplied (comma separated)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    @change="updateCommodities"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3 mt-4">
+            <label for="Who_is_the_Funder_of_your_project" class="form-label"
+              >Who is the Funder of your project?</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="Who_is_the_Funder_of_your_project"
+              v-model="formData.Who_is_the_Funder_of_your_project"
+            />
+          </div>
+        </div>
+
+        <!-- Step 6: Thematic Areas -->
+        <div class="form-step" :class="{ active: currentStep === 6 }">
+          <h4>Step 6: Thematic Areas Supported</h4>
+          <div
+            v-for="(theme, themeIndex) in thematicAreasOptions"
+            :key="themeIndex"
+            class="card"
+          >
+            <div class="card-header">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  :id="'theme_' + themeIndex"
+                  @change="toggleThematicArea(theme.area)"
+                />
+                <label
+                  class="form-check-label h6"
+                  :for="'theme_' + themeIndex"
+                  >{{ theme.area }}</label
+                >
+              </div>
+            </div>
+            <div v-if="isThematicAreaSelected(theme.area)" class="card-body">
+              <div class="row">
+                <div
+                  class="col-md-6"
+                  v-for="(sub, subIndex) in theme.sub_areas"
+                  :key="subIndex"
+                >
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      :value="sub"
+                      :id="'sub_' + themeIndex + '_' + subIndex"
+                      v-model="getThematicArea(theme.area).sub_areas"
+                    />
+                    <label
+                      class="form-check-label"
+                      :for="'sub_' + themeIndex + '_' + subIndex"
+                      >{{ sub.replace("Other: ", "") }}</label
+                    >
+                  </div>
+                  <input
+                    v-if="sub.startsWith('Other:')"
+                    type="text"
+                    class="form-control form-control-sm mt-1"
+                    placeholder="Please specify"
+                    @change="updateThematicOther($event, theme.area, sub)"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Navigation Buttons -->
-      <div class="d-flex justify-content-between mt-5">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          @click="prevStep"
-          :disabled="currentStep === 1"
-          >Previous</button
-        >
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="nextStep"
-          v-if="currentStep < totalSteps"
-          >Next</button
-        >
-        <button
-          type="submit"
-          class="btn btn-success"
-          v-if="currentStep === totalSteps"
-          >Submit</button
-        >
-      </div>
-    </form>
+        <!-- Step 7: KPIs & Collaboration -->
+        <div class="form-step" :class="{ active: currentStep === 7 }">
+          <h4>Step 7: KPIs & Collaboration</h4>
+          <div class="mb-3">
+            <label for="Key_Performance_Indicators" class="form-label"
+              >Key Performance Indicators (KPIs)</label
+            >
+            <textarea
+              class="form-control"
+              id="Key_Performance_Indicators"
+              rows="4"
+              v-model="formData.Key_Performance_Indicators"
+              placeholder="e.g., Number of States that have released counterpart funding..."
+            ></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label"
+              >Are you collaborating with any other partners?</label
+            >
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="collaboration"
+                id="collab_yes"
+                value="Yes"
+                v-model="formData.Are_you_collaborating_with_any_other_partners"
+              />
+              <label class="form-check-label" for="collab_yes">Yes</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="collaboration"
+                id="collab_no"
+                value="No"
+                v-model="formData.Are_you_collaborating_with_any_other_partners"
+              />
+              <label class="form-check-label" for="collab_no">No</label>
+            </div>
+          </div>
+          <div
+            v-if="
+              formData.Are_you_collaborating_with_any_other_partners === 'Yes'
+            "
+            class="mb-3"
+          >
+            <label class="form-label">List the Partners</label>
+            <div class="row">
+              <div
+                class="col-md-4"
+                v-for="partner in partnerOptions"
+                :key="partner"
+              >
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    :value="partner"
+                    :id="partner.toLowerCase()"
+                    v-model="formData.List_the_Partners"
+                  />
+                  <label
+                    class="form-check-label"
+                    :for="partner.toLowerCase()"
+                    >{{ partner }}</label
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <!-- Success Message -->
-    <div id="successMessage" class="alert alert-success mt-4" role="alert">
-      <strong>Success!</strong> Your form has been submitted. Thank you.
+        <!-- Navigation Buttons -->
+        <div class="d-flex justify-content-between mt-5">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            @click="prevStep"
+            :disabled="currentStep === 1"
+            >Previous</button
+          >
+          <button
+            type="button"
+            class="btn btn-primary"
+            @click="nextStep"
+            v-if="currentStep < totalSteps"
+            >Next</button
+          >
+          <button
+            type="submit"
+            class="btn btn-success"
+            v-if="currentStep === totalSteps"
+            >Submit</button
+          >
+        </div>
+      </form>
+
+      <!-- Success Message -->
+      <div id="successMessage" class="alert alert-success mt-4" role="alert">
+        <strong>Success!</strong> Your form has been submitted. Thank you.
+      </div>
+    </div>
+
+    <div class="text-center mt-5 text-muted small w-100">
+      <p>Powered by ResourceTrackr</p>
     </div>
   </div>
-  <footer class="text-center mt-5 text-muted small">
-    <p>Powered by ResourceTrackr</p>
-  </footer>
 </template>
 
 <script setup>
