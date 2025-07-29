@@ -1,6 +1,7 @@
 <script setup>
 // import HelloWorld from './components/HelloWorld.vue'
-import RsmpForm from "./components/Rsmp-Form.vue";
+// import RsmpForm from "./components/Rsmp-Form.vue";
+import RsmpTForm from "./components/Rsmp-T-Form.vue";
 </script>
 
 <template>
@@ -13,7 +14,8 @@ import RsmpForm from "./components/Rsmp-Form.vue";
     </a>
   </div> -->
   <!-- <HelloWorld msg="Vite + Vue" /> -->
-  <RsmpForm></RsmpForm>
+  <!-- <RsmpForm></RsmpForm> -->
+  <RsmpTForm></RsmpTForm>
 </template>
 
 <style scoped>

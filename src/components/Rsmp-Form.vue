@@ -1,10 +1,15 @@
 <template>
   <!-- Main Application Container -->
-  <div class="card shadow-lg border-0 rounded-4">
-    <div class="card-body p-5 pt-2 p-sm-3">
+
+  <!-- <div class="card shadow-lg border-0 rounded-4">
+    
+  </div> -->
+  <div class="row d-flex justify-content-center">
+    <div class="pt-2 p-sm-3 col-md-6">
       <!-- Header Section -->
+
       <div class="text-center">
-        <i class="bi bi-journal-text text-primary" style="font-size: 3rem"></i>
+        <!-- <i class="bi bi-journal-text text-primary" style="font-size: 3rem"></i> -->
         <h1 class="mt-3">Partner Resource Mapping</h1>
         <p class="lead text-muted"
           >Integrated Measles-Rubella (MR) Campaign Coordination</p
@@ -57,7 +62,7 @@
         <!-- Step 1: Introduction -->
         <transition name="fade">
           <div v-if="currentStep === 0">
-            <div class="p-4 bg-light rounded-3 text-dark">
+            <div class="bg-light rounded-3 text-dark">
               <h3 class="h5">Welcome</h3>
               <p
                 >The Gates Foundation has engaged Sydani Group to conduct a
@@ -70,6 +75,7 @@
                 support, planned activities, and geographical areas of
                 intervention.</p
               >
+
               <ul class="small">
                 <li>Participation is voluntary and non-binding.</li>
                 <li>Please complete all sections with clarity and accuracy.</li>
@@ -834,7 +840,7 @@ const submitForm = async () => {
 
   try {
     // This is the API call to your PocketBase collection
-    const record = await pb.collection(COLLECTION_NAME).create(dataToSend);
+    // const record = await pb.collection(COLLECTION_NAME).create(dataToSend);
 
     console.log("Successfully submitted to PocketBase:", record);
     submissionStatus.value = "success";
