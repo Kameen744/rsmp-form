@@ -546,6 +546,9 @@
       <strong>Success!</strong> Your form has been submitted. Thank you.
     </div>
   </div>
+  <footer class="text-center mt-5 text-muted small">
+    <p>Powered by ResourceTrackr</p>
+  </footer>
 </template>
 
 <script setup>
