@@ -49,6 +49,7 @@ jobs:
             --exclude 'docker-compose.yml' \
             --exclude 'Dockerfile' \
             --exclude 'deploy.sh' \
+            --exclude 'nginx-site.conf' \
             --exclude '.env' \
             ./ root@144.76.42.183:$DEPLOY_PATH/
 
