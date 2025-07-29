@@ -36,7 +36,7 @@
       >
       <div class="step" :class="{ active: currentStep === 7 }">7</div>
     </div> -->
-      <div class="progress mb-4" style="height: 25px">
+      <div class="progress mb-4" style="height: 25px" v-if="currentStep > 0">
         <div
           class="progress-bar"
           role="progressbar"
@@ -53,7 +53,7 @@
         <!-- Step 1: Welcome -->
         <div
           class="form-step welcome-step"
-          :class="{ active: currentStep === 1 }"
+          :class="{ active: currentStep === 0 }"
         >
           <h2 class="text-center mb-4">PARTNER RESOURCE MAPPING FORM</h2>
           <!-- <p
@@ -90,7 +90,7 @@
         </div>
 
         <!-- Step 2: Basic Information -->
-        <div class="form-step" :class="{ active: currentStep === 2 }">
+        <div class="form-step" :class="{ active: currentStep === 1 }">
           <h4>Step 2: Respondent & Organization Details</h4>
           <div class="mb-3">
             <label for="Name_of_Respondent" class="form-label"
@@ -168,7 +168,7 @@
         </div>
 
         <!-- Step 3: Support Details -->
-        <div class="form-step" :class="{ active: currentStep === 3 }">
+        <div class="form-step" :class="{ active: currentStep === 2 }">
           <h4>Step 3: Support Details</h4>
           <div class="row">
             <div class="col-md-6 mb-3">
@@ -258,7 +258,7 @@
         </div>
 
         <!-- Step 4: Campaign Focus -->
-        <div class="form-step" :class="{ active: currentStep === 4 }">
+        <div class="form-step" :class="{ active: currentStep === 3 }">
           <h4>Step 4: Campaign Focus</h4>
           <div class="mb-3">
             <label class="form-label">Select Campaign Focus Areas</label>
@@ -297,7 +297,7 @@
         </div>
 
         <!-- Step 5: Type of Support -->
-        <div class="form-step" :class="{ active: currentStep === 5 }">
+        <div class="form-step" :class="{ active: currentStep === 4 }">
           <h4>Step 5: Type of Support</h4>
           <div
             v-for="(support, index) in typeOfSupportOptions"
@@ -397,7 +397,7 @@
         </div>
 
         <!-- Step 6: Thematic Areas -->
-        <div class="form-step" :class="{ active: currentStep === 6 }">
+        <div class="form-step" :class="{ active: currentStep === 5 }">
           <h4>Step 6: Thematic Areas Supported</h4>
           <div
             v-for="(theme, themeIndex) in thematicAreasOptions"
@@ -454,7 +454,7 @@
         </div>
 
         <!-- Step 7: KPIs & Collaboration -->
-        <div class="form-step" :class="{ active: currentStep === 7 }">
+        <div class="form-step" :class="{ active: currentStep === 6 }">
           <h4>Step 7: KPIs & Collaboration</h4>
           <div class="mb-3">
             <label for="Key_Performance_Indicators" class="form-label"
@@ -532,10 +532,12 @@
           <button
             type="button"
             class="btn btn-secondary"
+            v-if="currentStep > 0"
             @click="prevStep"
-            :disabled="currentStep === 1"
+            :disabled="currentStep === 0"
             >Previous</button
           >
+          <div v-else></div>
           <button
             type="button"
             class="btn btn-primary"
@@ -572,8 +574,8 @@ import PocketBase from "pocketbase";
 const pb = new PocketBase("https://pb-api.resourcetrackr.com");
 const collectionName = "rsmp_data";
 
-const currentStep = ref(1);
-const totalSteps = 7; // Increased total steps
+const currentStep = ref(0);
+const totalSteps = 6; // Increased total steps
 const progress = computed(() => (currentStep.value / totalSteps) * 100);
 
 const formData = reactive({
@@ -695,7 +697,7 @@ const nextStep = () => {
 };
 
 const prevStep = () => {
-  if (currentStep.value > 1) currentStep.value--;
+  if (currentStep.value > 0) currentStep.value--;
 };
 
 const updateStates = (event) => {
@@ -851,7 +853,8 @@ body {
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  /* width: 100%; */
+  min-width: 50vw;
   max-width: 800px;
   margin-top: 2rem;
   margin-bottom: 2rem;
