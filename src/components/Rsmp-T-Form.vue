@@ -55,14 +55,14 @@
         :class="{ active: currentStep === 1 }"
       >
         <h2 class="text-center mb-4">PARTNER RESOURCE MAPPING FORM</h2>
-        <p
+        <!-- <p
           >In line with Government’s plans for a successful integrated MR
           campaign, Sydani Group has been engaged to conduct a Partners’
           Resource Mapping to ensure coordinated planning, equitable resource
           distribution, and efficient execution of the integrated campaigns. We
           are conducting a comprehensive mapping of Government and Partner
           support across all levels.
-        </p>
+        </p> -->
         <p
           >This form has been developed to document your organization’s role,
           scope of support, planned activities, and geographical areas of
