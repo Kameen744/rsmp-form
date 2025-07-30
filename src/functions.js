@@ -35,6 +35,7 @@ const validateFormData = (formData) => {
     "Start_date_of_support",
     "End_date_of_support",
     "Who_is_the_Funder_of_your_project",
+    "Summary_of_Support",
     // "Key_Performance_Indicators",
   ];
 

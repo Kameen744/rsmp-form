@@ -8,7 +8,7 @@ import validateFormData from "../functions";
 const pb = new PocketBase("https://pb-api.resourcetrackr.com");
 // const collectionName = "rsmp_data";
 const currentStep = ref(0);
-const totalSteps = 6; // Increased total steps
+const totalSteps = 7; // Increased total steps
 const progress = computed(() => (currentStep.value / totalSteps) * 100);
 
 const states = ref([]);
@@ -39,6 +39,7 @@ const formData = reactive({
   Key_Performance_Indicators: "",
   Are_you_collaborating_with_any_other_partners: "No",
   List_the_Partners: [],
+  Summary_of_Support: "",
 });
 
 const campaignFocusOptions = [
@@ -879,7 +880,7 @@ onMounted(async () => {
           </div>
           <div class="mb-3">
             <label for="Campaign_Focus_Other" class="form-label"
-              >Others (Others (Please Specify))</label
+              >Others (Please Specify)</label
             >
             <input
               type="text"
@@ -1081,7 +1082,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <!-- Step 7: KPIs & Collaboration -->
+        <!-- Step 6: KPIs & Collaboration -->
         <div class="form-step" :class="{ active: currentStep === 6 }">
           <h4>Step {{ currentStep }}: Collaboration</h4>
           <div class="mb-3">
@@ -1170,8 +1171,8 @@ onMounted(async () => {
           </div>
         </div>
 
-        <!-- <div class="form-step" :class="{ active: currentStep === 7 }">
-          <h4>Step {{ currentStep }}: KPIs & Collaboration</h4>
+        <div class="form-step" :class="{ active: currentStep === 7 }">
+          <h4>Step {{ currentStep }}: Summary of Support</h4>
           <div class="mb-3">
             <label for="Key_Performance_Indicators" class="form-label"
               >Summary of Support *</label
@@ -1180,76 +1181,18 @@ onMounted(async () => {
               class="form-control"
               id="Key_Performance_Indicators"
               rows="4"
-              v-model="formData.Key_Performance_Indicators"
+              v-model="formData.Summary_of_Support"
               placeholder="The information provided here will be displayed as a synopsis of your support for the integrated campaign."
             ></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label"
-              >Are you collaborating with any other partners?</label
+
+            <div
+              class="invalid-feedback d-block"
+              v-if="err('Summary_of_Support')"
             >
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="collaboration"
-                id="collab_yes"
-                value="Yes"
-                v-model="formData.Are_you_collaborating_with_any_other_partners"
-              />
-              <label class="form-check-label" for="collab_yes">Yes</label>
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="collaboration"
-                id="collab_no"
-                value="No"
-                v-model="formData.Are_you_collaborating_with_any_other_partners"
-              />
-              <label class="form-check-label" for="collab_no">No</label>
+              {{ err("Summary_of_Support") }}
             </div>
           </div>
-          <div
-            v-if="
-              formData.Are_you_collaborating_with_any_other_partners === 'Yes'
-            "
-            class="mb-3"
-          >
-            <label class="form-label">List the Partners</label>
-            <div class="row">
-              <div
-                class="col-md-4"
-                v-for="partner in partnerOptions"
-                :key="partner"
-              >
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    :value="partner"
-                    :id="partner.toLowerCase()"
-                    v-model="formData.List_the_Partners"
-                  />
-                  <label
-                    class="form-check-label"
-                    :for="partner.toLowerCase()"
-                    >{{ partner }}</label
-                  >
-                </div>
-              </div>
-            </div>
-            <div class="mb-3 mt-3 col-md-6">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Others (Specify)"
-                @change="updatePartnerOther($event)"
-              />
-            </div>
-          </div>
-        </div> -->
+        </div>
 
         <!-- Navigation Buttons -->
         <div class="d-flex justify-content-between mt-5">
