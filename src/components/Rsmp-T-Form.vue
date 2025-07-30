@@ -645,6 +645,17 @@ onMounted(async () => {
                 type="radio"
                 class="btn-check"
                 name="Type_of_Organization_Agency"
+                id="funder"
+                value="Funder"
+                autocomplete="off"
+                v-model="formData.Type_of_Organization_Agency"
+              />
+              <label class="btn btn-outline-primary" for="funder">Funder</label>
+
+              <input
+                type="radio"
+                class="btn-check"
+                name="Type_of_Organization_Agency"
                 id="implementing"
                 value="Implementing Partner"
                 autocomplete="off"
