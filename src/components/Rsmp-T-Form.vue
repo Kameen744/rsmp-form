@@ -125,7 +125,7 @@ const thematicAreasOptions = [
     ],
   },
   {
-    area: "MERLA",
+    area: "MERLA (Monitoring, Evaluation, Research, Learning and Accountability)",
     sub_areas: [
       "Data Management",
       "Research",
@@ -407,6 +407,7 @@ const submitForm = async () => {
     formErrors.value = validate.errors;
     return;
   }
+
   formErrors.value = {};
   const record = await pb.collection("rsmp_data").create(formJsonData);
 
