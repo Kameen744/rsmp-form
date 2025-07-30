@@ -16,6 +16,7 @@ const lgas = ref([]);
 const selectedState = ref("");
 const selectedStates = ref([]);
 const selectedLgas = ref([]);
+const mainFormRef = ref("");
 
 const formData = reactive({
   Name_of_Respondent: "",
@@ -26,7 +27,7 @@ const formData = reactive({
   Type_of_Organization_Agency: "",
   Start_date_of_support: "",
   End_date_of_support: "",
-  Status_of_support: "Not started",
+  Status_of_support: "Select status",
   Level_of_support: [],
   States_supported: [],
   LGA_supported: [],
@@ -154,7 +155,75 @@ const thematicAreasOptions = [
   { area: "Surveillance", sub_areas: ["AEFI", "Other: "] },
 ];
 
+const step_1_rq_fields = [
+  "Name_of_Respondent",
+  "Phone_Number_of_Respondent",
+  "Email_Address_of_Respondent",
+  "Designation_of_respondent",
+  "Name_of_Organization_Agency",
+  "Type_of_Organization_Agency",
+];
+
+const step_2_rq_fields = [
+  "Start_date_of_support",
+  "End_date_of_support",
+  "Status_of_support",
+  "Level_of_support",
+];
+
+const step_3_rq_fields = ["Campaign_Focus"];
+
+const step_4_rq_fields = [
+  "Who_is_the_Funder_of_your_project",
+  "Type_of_Support",
+];
+
+const step_5_rq_fields = ["Thematic_areas_supported"];
+
 const nextStep = () => {
+  if (currentStep.value == 0) {
+    currentStep.value++;
+    return;
+  }
+
+  const validate = validateFormData(formData);
+  formErrors.value = validate.errors;
+
+  if (currentStep.value == 1) {
+    if (step_1_rq_fields.some((key) => key in formErrors.value)) {
+      return;
+    }
+    formErrors.value = {};
+  }
+
+  if (currentStep.value == 2) {
+    if (step_2_rq_fields.some((key) => key in formErrors.value)) {
+      return;
+    }
+    formErrors.value = {};
+  }
+
+  if (currentStep.value == 3) {
+    if (step_3_rq_fields.some((key) => key in formErrors.value)) {
+      return;
+    }
+    formErrors.value = {};
+  }
+
+  if (currentStep.value == 4) {
+    if (step_4_rq_fields.some((key) => key in formErrors.value)) {
+      return;
+    }
+    formErrors.value = {};
+  }
+
+  if (currentStep.value == 5) {
+    if (step_5_rq_fields.some((key) => key in formErrors.value)) {
+      return;
+    }
+    formErrors.value = {};
+  }
+
   if (currentStep.value < totalSteps) currentStep.value++;
 };
 
@@ -288,8 +357,6 @@ const updatePartnerOther = (event) => {
   }
 
   otherPartner.value = event.target.value;
-
-  console.log("partners: ", formData.List_the_Partners);
 };
 
 const addStatesTag = async (newTag) => {
@@ -319,16 +386,30 @@ const err = (field) => {
   return false;
 };
 
+const isValidateForm = () => {
+  if (currentStep.value == 0) {
+    return true;
+  }
+
+  if (!mainFormRef.value.checkValidity()) {
+    mainFormRef.value.reportValidity();
+    return false;
+  }
+
+  return true;
+};
+
 const submitForm = async () => {
   const formJsonData = JSON.parse(JSON.stringify(formData));
   const validate = validateFormData(formJsonData);
   if (validate.isValid === false) {
     formErrors.value = validate.errors;
-    // return;
+    console.log(formErrors.value);
+    return;
   }
   // console.log("validation: ", rm);
   const record = await pb.collection("rsmp_data").create(formJsonData);
-  console.log("FormData: ", formJsonData);
+
   const successMessage = document.getElementById("successMessage");
   if (successMessage) successMessage.style.display = "block";
 
@@ -401,7 +482,8 @@ onMounted(async () => {
         </div>
       </div>
 
-      <form @submit.prevent="submitForm">
+      <form @submit.prevent="submitForm" ref="mainFormRef">
+        <!-- Step 1 -->
         <div
           class="form-step welcome-step"
           :class="{ active: currentStep === 0 }"
@@ -435,13 +517,14 @@ onMounted(async () => {
 
         <!-- Step 2: Basic Information -->
         <div class="form-step" :class="{ active: currentStep === 1 }">
-          <h4>Step 2: Respondent & Organization Details</h4>
+          <h4>Step {{ currentStep }}: Respondent & Organization Details</h4>
 
           <div class="mb-3">
             <label for="Name_of_Respondent" class="form-label"
-              >Name of Respondent</label
+              >Name of Respondent *</label
             >
             <input
+              required
               type="text"
               class="form-control"
               :class="err('Name_of_Respondent') ? 'is-invalid' : ''"
@@ -460,50 +543,82 @@ onMounted(async () => {
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="Name_of_Respondent" class="form-label"
-                >Phone Number of Respondent</label
+                >Phone Number of Respondent *</label
               >
               <input
+                required
                 type="text"
                 class="form-control"
+                :class="err('Phone_Number_of_Respondent') ? 'is-invalid' : ''"
                 id="Name_of_Respondent"
                 v-model="formData.Phone_Number_of_Respondent"
               />
+              <div
+                class="invalid-feedback d-block"
+                v-if="err('Phone_Number_of_Respondent')"
+              >
+                {{ err("Phone_Number_of_Respondent") }}
+              </div>
             </div>
             <div class="col-md-6 mb-3">
               <label for="Name_of_Respondent" class="form-label"
-                >Email Address of Respondent</label
+                >Email Address of Respondent *</label
               >
               <input
-                type="text"
+                required
+                type="email"
                 class="form-control"
+                :class="err('Email_Address_of_Respondent') ? 'is-invalid' : ''"
                 id="Name_of_Respondent"
                 v-model="formData.Email_Address_of_Respondent"
               />
+              <div
+                class="invalid-feedback d-block"
+                v-if="err('Email_Address_of_Respondent')"
+              >
+                {{ err("Email_Address_of_Respondent") }}
+              </div>
             </div>
           </div>
 
           <div class="mb-3">
             <label for="Designation_of_respondent" class="form-label"
-              >Designation of Respondent</label
+              >Designation of Respondent *</label
             >
             <input
+              required
               type="text"
               class="form-control"
+              :class="err('Designation_of_respondent') ? 'is-invalid' : ''"
               id="Designation_of_respondent"
               v-model="formData.Designation_of_respondent"
             />
+            <div
+              class="invalid-feedback d-block"
+              v-if="err('Designation_of_respondent')"
+            >
+              {{ err("Designation_of_respondent") }}
+            </div>
           </div>
 
           <div class="mb-3">
             <label for="Name_of_Organization_Agency" class="form-label"
-              >Name of Organization/Agency</label
+              >Name of Organization/Agency *</label
             >
             <input
+              required
               type="text"
               class="form-control"
+              :class="err('Name_of_Organization_Agency') ? 'is-invalid' : ''"
               id="Name_of_Organization_Agency"
               v-model="formData.Name_of_Organization_Agency"
             />
+            <div
+              class="invalid-feedback d-block"
+              v-if="err('Name_of_Organization_Agency')"
+            >
+              {{ err("Name_of_Organization_Agency") }}
+            </div>
           </div>
           <div class="mb-3">
             <div>
@@ -551,46 +666,80 @@ onMounted(async () => {
                 >Government</label
               >
             </div>
+
+            <div
+              class="invalid-feedback d-block"
+              v-if="err('Type_of_Organization_Agency')"
+            >
+              {{ err("Type_of_Organization_Agency") }}
+            </div>
           </div>
         </div>
 
         <!-- Step 3: Support Details -->
         <div class="form-step" :class="{ active: currentStep === 2 }">
-          <h4>Step 3: Support Details</h4>
+          <h4>Step {{ currentStep }}: Support Details</h4>
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="Start_date_of_support" class="form-label"
-                >Start Date of Support</label
+                >Start Date of Support *</label
               >
               <input
+                required
                 type="date"
                 class="form-control"
+                :class="err('Start_date_of_support') ? 'is-invalid' : ''"
                 id="Start_date_of_support"
                 v-model="formData.Start_date_of_support"
               />
+              <div
+                class="invalid-feedback d-block"
+                v-if="err('Start_date_of_support')"
+              >
+                {{ err("Start_date_of_support") }}
+              </div>
             </div>
             <div class="col-md-6 mb-3">
               <label for="End_date_of_support" class="form-label"
-                >End Date of Support</label
+                >End Date of Support *</label
               >
               <input
+                required
                 type="date"
                 class="form-control"
+                :class="err('Start_date_of_support') ? 'is-invalid' : ''"
                 id="End_date_of_support"
                 v-model="formData.End_date_of_support"
               />
+              <div
+                class="invalid-feedback d-block"
+                v-if="err('End_date_of_support')"
+              >
+                {{ err("End_date_of_support") }}
+              </div>
             </div>
           </div>
           <div class="mb-3">
-            <label class="form-label">Status of Support</label>
-            <select class="form-select" v-model="formData.Status_of_support">
+            <label class="form-label">Status of Support *</label>
+            <select
+              required
+              class="form-select"
+              :class="err('Status_of_support') ? 'is-invalid' : ''"
+              v-model="formData.Status_of_support"
+            >
               <option>Not started</option>
               <option>In Progress</option>
               <option>Completed</option>
             </select>
+            <div
+              class="invalid-feedback d-block"
+              v-if="err('Status_of_support')"
+            >
+              {{ err("Status_of_support") }}
+            </div>
           </div>
           <div class="mb-3">
-            <label class="form-label">Level of Support</label>
+            <label class="form-label">Level of Support *</label>
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -611,45 +760,6 @@ onMounted(async () => {
               />
               <label class="form-check-label" for="state">State</label>
             </div>
-            <!-- mutli select form for state -->
-            <!-- <div v-if="formData.Level_of_support.includes('State')" class="mb-3"
-              ><label class="typo__label">States Supported</label>
-              <Multiselect
-                id="multiselect"
-                v-model="formData.Level_of_support"
-                :options="states"
-                :multiple="true"
-                :close-on-select="false"
-                :clear-on-select="false"
-                :preserve-search="true"
-                placeholder="Pick States"
-                open-direction="bottom"
-                label="state"
-                track-by="state"
-                :preselect-first="true"
-              >
-                <template #selection="{ values, search, isOpen }">
-                  <span
-                    class="multiselect__single"
-                    v-if="values.length"
-                    v-show="!isOpen"
-                    >{{ values.length }} options selected</span
-                  >
-                </template>
-              </Multiselect>
-
-              <div
-                class="btn-group mt-1"
-                role="group"
-                aria-label="Basic checkbox toggle button group"
-              >
-                <label
-                  class="btn btn-sm btn-outline-primary"
-                  v-for="lvs in formData.Level_of_support"
-                  >{{ lvs.state }}</label
-                >
-              </div>
-            </div> -->
             <div
               v-if="formData.Level_of_support.includes('State')"
               class="mb-3 mt-3"
@@ -685,27 +795,14 @@ onMounted(async () => {
               />
               <label class="form-check-label" for="lga">LGA</label>
             </div>
-          </div>
-          <!-- <div v-if="formData.Level_of_support.includes('State')" class="mb-3">
-            <label class="form-label">States Supported</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Enter states, comma separated"
-              @change="updateStates"
-            />
-          </div> -->
-          <!-- <div v-if="formData.Level_of_support.includes('LGA')" class="mb-3">
-            <label class="form-label"
-              >LGAs Supported (format: State,LGA; State,LGA)</label
+            <div
+              class="invalid-feedback d-block"
+              v-if="err('Level_of_support')"
             >
-            <input
-              type="text"
-              class="form-control"
-              placeholder="e.g., Kaduna,Zaria; Lagos,Ikeja"
-              @change="updateLGAs"
-            />
-          </div> -->
+              {{ err("Level_of_support") }}
+            </div>
+          </div>
+
           <div v-if="formData.Level_of_support.includes('LGA')"
             ><label class="typo__label">Select State</label>
             <multiselect
@@ -753,9 +850,9 @@ onMounted(async () => {
 
         <!-- Step 4: Campaign Focus -->
         <div class="form-step" :class="{ active: currentStep === 3 }">
-          <h4>Step 4: Campaign Focus</h4>
-          <div class="mb-3">
-            <label class="form-label">Select Campaign Focus Areas</label>
+          <h4>Step {{ currentStep }}: Campaign Focus</h4>
+          <div class="mb-3 mt-3">
+            <label class="form-label">Select Campaign Focus Areas *</label>
             <div class="row">
               <div
                 class="col-md-6"
@@ -776,10 +873,13 @@ onMounted(async () => {
                 </div>
               </div>
             </div>
+            <div class="invalid-feedback d-block" v-if="err('Campaign_Focus')">
+              {{ err("Campaign_Focus") }}
+            </div>
           </div>
           <div class="mb-3">
             <label for="Campaign_Focus_Other" class="form-label"
-              >Other (Please specify)</label
+              >Others (Others (Please Specify))</label
             >
             <input
               type="text"
@@ -792,7 +892,8 @@ onMounted(async () => {
 
         <!-- Step 5: Type of Support -->
         <div class="form-step" :class="{ active: currentStep === 4 }">
-          <h4>Step 5: Type of Support</h4>
+          <h4>Step {{ currentStep }}: Type of Support</h4>
+          <label for="" class="form-label mt-1">Type of support *</label>
           <div
             v-for="(support, index) in typeOfSupportOptions"
             :key="index"
@@ -842,18 +943,7 @@ onMounted(async () => {
                         "
                       />
                     </div>
-                    <!-- <div>
-                      <label class="form-label"
-                        >Deployment States (comma separated)</label
-                      >
-                      <input
-                        type="text"
-                        class="form-control"
-                        @change="updateDeploymentStates"
-                      />
-                    </div> -->
 
-                    <!-- mutlip select deployment states -->
                     <div class="mb-3 mt-3"
                       ><label class="typo__label" for="deploymentstate">
                         <small>Deployment States</small>
@@ -904,9 +994,12 @@ onMounted(async () => {
               </div>
             </div>
           </div>
+          <div class="invalid-feedback d-block" v-if="err('Type_of_Support')">
+            {{ err("Type_of_Support") }}
+          </div>
           <div class="mb-3 mt-4">
             <label for="Who_is_the_Funder_of_your_project" class="form-label"
-              >Who is the Funder of your project?</label
+              >Who is the Funder of your project? *</label
             >
             <input
               type="text"
@@ -914,12 +1007,20 @@ onMounted(async () => {
               id="Who_is_the_Funder_of_your_project"
               v-model="formData.Who_is_the_Funder_of_your_project"
             />
+
+            <div
+              class="invalid-feedback d-block"
+              v-if="err('Who_is_the_Funder_of_your_project')"
+            >
+              {{ err("Who_is_the_Funder_of_your_project") }}
+            </div>
           </div>
         </div>
 
         <!-- Step 6: Thematic Areas -->
         <div class="form-step" :class="{ active: currentStep === 5 }">
-          <h4>Step 6: Thematic Areas Supported</h4>
+          <h4>Step {{ currentStep }}: Thematic Areas Supported</h4>
+          <label class="form-label mt-1">Areas Supported *</label>
           <div
             v-for="(theme, themeIndex) in thematicAreasOptions"
             :key="themeIndex"
@@ -965,28 +1066,122 @@ onMounted(async () => {
                     v-if="sub.startsWith('Other:')"
                     type="text"
                     class="form-control form-control-sm mt-1"
-                    placeholder="Please specify"
+                    placeholder="Others (Please Specify)"
                     @change="updateThematicOther($event, theme.area, sub)"
                   />
                 </div>
               </div>
             </div>
           </div>
+          <div
+            class="invalid-feedback d-block"
+            v-if="err('Thematic_areas_supported')"
+          >
+            {{ err("Thematic_areas_supported") }}
+          </div>
         </div>
 
         <!-- Step 7: KPIs & Collaboration -->
         <div class="form-step" :class="{ active: currentStep === 6 }">
-          <h4>Step 7: KPIs & Collaboration</h4>
+          <h4>Step {{ currentStep }}: Collaboration</h4>
+          <div class="mb-3">
+            <!-- <label for="Key_Performance_Indicators" class="form-label"
+              >Key Performance Indicators (KPIs)</label
+            > -->
+            <!-- <textarea
+              class="form-control"
+              id="Key_Performance_Indicators"
+              rows="4"
+              v-model="formData.Key_Performance_Indicators"
+              placeholder="e.g., Number of States that have released counterpart funding..."
+            ></textarea> -->
+          </div>
+          <div class="mb-3">
+            <label class="form-label"
+              >Are you collaborating with any other partners? *</label
+            >
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="collaboration"
+                id="collab_yes"
+                value="Yes"
+                v-model="formData.Are_you_collaborating_with_any_other_partners"
+              />
+              <label class="form-check-label" for="collab_yes">Yes</label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="collaboration"
+                id="collab_no"
+                value="No"
+                v-model="formData.Are_you_collaborating_with_any_other_partners"
+              />
+              <label class="form-check-label" for="collab_no">No</label>
+            </div>
+
+            <div
+              class="invalid-feedback d-block"
+              v-if="err('Are_you_collaborating_with_any_other_partners')"
+            >
+              {{ err("Are_you_collaborating_with_any_other_partners") }}
+            </div>
+          </div>
+          <div
+            v-if="
+              formData.Are_you_collaborating_with_any_other_partners === 'Yes'
+            "
+            class="mb-3"
+          >
+            <label class="form-label">List the Partners</label>
+            <div class="row">
+              <div
+                class="col-md-4"
+                v-for="partner in partnerOptions"
+                :key="partner"
+              >
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    :value="partner"
+                    :id="partner.toLowerCase()"
+                    v-model="formData.List_the_Partners"
+                  />
+                  <label
+                    class="form-check-label"
+                    :for="partner.toLowerCase()"
+                    >{{ partner }}</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="mb-3 mt-3 col-md-6">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Others (Specify)"
+                @change="updatePartnerOther($event)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="form-step" :class="{ active: currentStep === 7 }">
+          <h4>Step {{ currentStep }}: KPIs & Collaboration</h4>
           <div class="mb-3">
             <label for="Key_Performance_Indicators" class="form-label"
-              >Key Performance Indicators (KPIs)</label
+              >Summary of Support *</label
             >
             <textarea
               class="form-control"
               id="Key_Performance_Indicators"
               rows="4"
               v-model="formData.Key_Performance_Indicators"
-              placeholder="e.g., Number of States that have released counterpart funding..."
+              placeholder="The information provided here will be displayed as a synopsis of your support for the integrated campaign."
             ></textarea>
           </div>
           <div class="mb-3">
@@ -1054,7 +1249,7 @@ onMounted(async () => {
               />
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- Navigation Buttons -->
         <div class="d-flex justify-content-between mt-5">

@@ -14,9 +14,14 @@ const validateFormData = (formData) => {
   };
 
   // Helper function to validate phone number (11 digits)
+  // const isValidPhoneNumber = (phone) => {
+  //   const phoneRegex = /^\d{11}$/;
+  //   return phoneRegex.test(phone.replace(/\s+/g, ""));
+  // };
+
   const isValidPhoneNumber = (phone) => {
     const phoneRegex = /^\d{11}$/;
-    return phoneRegex.test(phone.replace(/\s+/g, ""));
+    return phoneRegex.test(phone.toString().replace(/\s+/g, ""));
   };
 
   // Validate required text fields
@@ -30,7 +35,7 @@ const validateFormData = (formData) => {
     "Start_date_of_support",
     "End_date_of_support",
     "Who_is_the_Funder_of_your_project",
-    "Key_Performance_Indicators",
+    // "Key_Performance_Indicators",
   ];
 
   requiredTextFields.forEach((field) => {
@@ -42,8 +47,8 @@ const validateFormData = (formData) => {
   // Validate required array fields
   const requiredArrayFields = [
     "Level_of_support",
-    "States_supported",
-    "LGA_supported",
+    // "States_supported",
+    // "LGA_supported",
     "Campaign_Focus",
     "Type_of_Support",
     "Thematic_areas_supported",
@@ -76,7 +81,7 @@ const validateFormData = (formData) => {
   }
 
   // Validate Status_of_support (check if it's still the default)
-  if (formData.Status_of_support === "Not started") {
+  if (formData.Status_of_support === "Select status") {
     errors.Status_of_support = "Please select an appropriate status";
   }
 
