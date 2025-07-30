@@ -298,6 +298,27 @@ const getLgas = async () => {
   });
 };
 
+/**
+ * Helper function to format field names for better error messages.
+ * e.g., "Name_of_Respondent" becomes "Name of Respondent"
+ * @param {string} key - The key from the formData.
+ * @returns {string} The formatted field name.
+ */
+function formatFieldName(key) {
+  return key.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+/**
+ * Basic email validation regex.
+ * @param {string} email - The email string to validate.
+ * @returns {boolean} True if the email is valid, false otherwise.
+ */
+function isValidEmail(email) {
+  // A more comprehensive regex might be needed for production
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 onMounted(async () => {
   states.value = await pb.collection("state").getFullList({
     fields: "state",
@@ -456,41 +477,48 @@ onMounted(async () => {
             />
           </div>
           <div class="mb-3">
-            <label class="form-label">Type of Organization/Agency</label>
-            <div class="form-check">
+            <div>
+              <label class="form-label">Type of Organization/Agency</label>
+            </div>
+            <div
+              class="btn-group"
+              role="group"
+              aria-label="Basic radio toggle button group"
+            >
               <input
-                class="form-check-input"
                 type="radio"
+                class="btn-check"
                 name="Type_of_Organization_Agency"
                 id="donor"
                 value="Donor"
+                autocomplete="off"
                 v-model="formData.Type_of_Organization_Agency"
               />
-              <label class="form-check-label" for="donor">Donor</label>
-            </div>
-            <div class="form-check">
+              <label class="btn btn-outline-primary" for="donor">Donor</label>
+
               <input
-                class="form-check-input"
                 type="radio"
+                class="btn-check"
                 name="Type_of_Organization_Agency"
                 id="implementing"
                 value="Implementing Partner"
+                autocomplete="off"
                 v-model="formData.Type_of_Organization_Agency"
               />
-              <label class="form-check-label" for="implementing"
+              <label class="btn btn-outline-primary" for="implementing"
                 >Implementing Partner</label
               >
-            </div>
-            <div class="form-check">
+
               <input
-                class="form-check-input"
                 type="radio"
+                class="btn-check"
                 name="Type_of_Organization_Agency"
                 id="government"
                 value="Government"
+                autocomplete="off"
                 v-model="formData.Type_of_Organization_Agency"
               />
-              <label class="form-check-label" for="government"
+              <label class="btn btn-outline-primary" for="government"
                 >Government</label
               >
             </div>
