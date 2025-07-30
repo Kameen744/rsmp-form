@@ -18,6 +18,8 @@ const selectedLgas = ref([]);
 
 const formData = reactive({
   Name_of_Respondent: "",
+  Phone_Number_of_Respondent: "",
+  Email_Address_of_Respondent: "",
   Designation_of_respondent: "",
   Name_of_Organization_Agency: "",
   Type_of_Organization_Agency: "",
@@ -343,7 +345,7 @@ onMounted(async () => {
       >
       <div class="step" :class="{ active: currentStep === 7 }">7</div>
     </div> -->
-      <div class="progress mb-4" style="height: 25px" v-if="currentStep > 0">
+      <div class="progress mb-4" style="height: 20px" v-if="currentStep > 0">
         <div
           class="progress-bar"
           role="progressbar"
@@ -363,14 +365,7 @@ onMounted(async () => {
           :class="{ active: currentStep === 0 }"
         >
           <h2 class="text-center mb-4">PARTNER RESOURCE MAPPING FORM</h2>
-          <!-- <p
-          >In line with Government’s plans for a successful integrated MR
-          campaign, Sydani Group has been engaged to conduct a Partners’
-          Resource Mapping to ensure coordinated planning, equitable resource
-          distribution, and efficient execution of the integrated campaigns. We
-          are conducting a comprehensive mapping of Government and Partner
-          support across all levels.
-        </p> -->
+
           <p
             >This form has been developed to document your organization’s role,
             scope of support, planned activities, and geographical areas of
@@ -399,6 +394,7 @@ onMounted(async () => {
         <!-- Step 2: Basic Information -->
         <div class="form-step" :class="{ active: currentStep === 1 }">
           <h4>Step 2: Respondent & Organization Details</h4>
+
           <div class="mb-3">
             <label for="Name_of_Respondent" class="form-label"
               >Name of Respondent</label
@@ -410,6 +406,32 @@ onMounted(async () => {
               v-model="formData.Name_of_Respondent"
             />
           </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="Name_of_Respondent" class="form-label"
+                >Phone Number of Respondent</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="Name_of_Respondent"
+                v-model="formData.Phone_Number_of_Respondent"
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="Name_of_Respondent" class="form-label"
+                >Email Address of Respondent</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="Name_of_Respondent"
+                v-model="formData.Email_Address_of_Respondent"
+              />
+            </div>
+          </div>
+
           <div class="mb-3">
             <label for="Designation_of_respondent" class="form-label"
               >Designation of Respondent</label
@@ -421,6 +443,7 @@ onMounted(async () => {
               v-model="formData.Designation_of_respondent"
             />
           </div>
+
           <div class="mb-3">
             <label for="Name_of_Organization_Agency" class="form-label"
               >Name of Organization/Agency</label
