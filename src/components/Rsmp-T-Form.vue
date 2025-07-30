@@ -269,7 +269,7 @@ const addLgasTag = async (newTag) => {
 const submitForm = async () => {
   const formJsonData = JSON.parse(JSON.stringify(formData));
   const record = await pb.collection("rsmp_data").create(formJsonData);
-  console.log("Form data to be submitted:", record);
+  console.log("FormData: ", formJsonData);
   const successMessage = document.getElementById("successMessage");
   if (successMessage) successMessage.style.display = "block";
 
@@ -289,11 +289,10 @@ const submitForm = async () => {
   }, 5000);
 };
 
-const getLgas = async (stateName) => {
-  selectedState.value = stateName;
+const getLgas = async () => {
   lgas.value = await pb.collection("lga").getFullList({
     fields: "state,lga",
-    filter: `state="${stateName}"`,
+    filter: `state="${selectedState.value.state}"`,
   });
 };
 
@@ -627,14 +626,34 @@ onMounted(async () => {
               @change="updateLGAs"
             />
           </div> -->
+          <div v-if="formData.Level_of_support.includes('LGA')"
+            ><label class="typo__label">Select State</label>
+            <multiselect
+              id="level-of-support-state"
+              v-model="selectedState"
+              tag-placeholder="Select state"
+              placeholder="State for the support"
+              label="state"
+              track-by="state"
+              :options="states"
+              :close-on-select="true"
+              :clear-on-select="true"
+              :preserve-search="false"
+              :max-height="200"
+              :taggable="true"
+              open-direction="bottom"
+              @select="getLgas"
+            ></multiselect>
+          </div>
           <div
             v-if="formData.Level_of_support.includes('LGA')"
             class="mb-3 mt-3"
-            ><label class="typo__label">
+          >
+            <label class="typo__label">
               <small>LGAs Supported</small>
             </label>
             <multiselect
-              id="tagging"
+              id="level-of-support"
               v-model="formData.LGA_supported"
               tag-placeholder="Add supported LGA"
               placeholder="Search or add supported LGA"
@@ -644,32 +663,11 @@ onMounted(async () => {
               :multiple="true"
               :close-on-select="false"
               :clear-on-select="false"
-              :preserve-search="true"
+              :preserve-search="false"
               :max-height="200"
               :taggable="true"
               open-direction="bottom"
             ></multiselect>
-            <div
-              class="btn-group mt-1"
-              role="group"
-              aria-label="Basic checkbox toggle button group"
-            >
-              <template v-for="lvs in formData.States_supported">
-                <!-- <input
-                  type="checkbox"
-                  class="btn-check"
-                  :checked="selectedState == lvs.state"
-                  :id="lvs.state"
-                  autocomplete="off"
-                /> -->
-                <label
-                  class="btn btn-sm btn-outline-primary"
-                  :for="lvs.state"
-                  @click="getLgas(lvs.state)"
-                  >{{ lvs.state }}</label
-                >
-              </template>
-            </div>
           </div>
         </div>
 
@@ -764,7 +762,7 @@ onMounted(async () => {
                         "
                       />
                     </div>
-                    <div>
+                    <!-- <div>
                       <label class="form-label"
                         >Deployment States (comma separated)</label
                       >
@@ -773,7 +771,34 @@ onMounted(async () => {
                         class="form-control"
                         @change="updateDeploymentStates"
                       />
+                    </div> -->
+
+                    <!-- mutlip select deployment states -->
+                    <div class="mb-3 mt-3"
+                      ><label class="typo__label" for="deploymentstate">
+                        <small>Deployment States</small>
+                      </label>
+                      <multiselect
+                        id="deploymentstate"
+                        v-model="
+                          getSupport('Technical Support').deployment_states
+                        "
+                        tag-placeholder="Add deployment state"
+                        placeholder="Search or add deployment state"
+                        label="state"
+                        track-by="state"
+                        :options="states"
+                        :multiple="true"
+                        :close-on-select="false"
+                        :clear-on-select="false"
+                        :preserve-search="false"
+                        :max-height="200"
+                        :taggable="true"
+                        open-direction="bottom"
+                      ></multiselect>
                     </div>
+
+                    <!-- end multiselect -->
                   </div>
                 </div>
                 <div v-if="support.name === 'Funding'">
