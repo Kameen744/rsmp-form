@@ -405,10 +405,9 @@ const submitForm = async () => {
   const validate = validateFormData(formJsonData);
   if (validate.isValid === false) {
     formErrors.value = validate.errors;
-    console.log(formErrors.value);
     return;
   }
-  // console.log("validation: ", rm);
+  formErrors.value = {};
   const record = await pb.collection("rsmp_data").create(formJsonData);
 
   const successMessage = document.getElementById("successMessage");
