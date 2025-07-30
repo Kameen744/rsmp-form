@@ -2,6 +2,7 @@
 import { ref, reactive, computed, onMounted } from "vue";
 import PocketBase from "pocketbase";
 import Multiselect from "vue-multiselect";
+import validateFormData from "../functions";
 
 // const pb = new PocketBase("http://127.0.0.1:8090");
 const pb = new PocketBase("https://pb-api.resourcetrackr.com");
@@ -48,24 +49,45 @@ const campaignFocusOptions = [
   "Nutrition",
   "Routine Immunization",
 ];
+// const partnerOptions = [
+//   "UNICEF",
+//   "WHO",
+//   "USCDC",
+//   "AFFENET",
+//   "Red Cross",
+//   "IVAC",
+//   "C-WINS",
+//   "e-Health Africa",
+//   "SCIDAR",
+//   "GRID3",
+//   "CHAI",
+//   "McKinsey",
+//   "McKing",
+//   "Acasus",
+//   "Sydani Group",
+//   "Others",
+// ];
+
 const partnerOptions = [
-  "UNICEF",
-  "WHO",
-  "USCDC",
-  "AFFENET",
-  "Red Cross",
-  "IVAC",
-  "C-WINS",
-  "e-Health Africa",
-  "SCIDAR",
-  "GRID3",
-  "CHAI",
-  "McKinsey",
-  "McKing",
   "Acasus",
+  "AFENET",
+  "C-WINS",
+  "CHAI",
+  "e-Health Africa",
+  "GRID3",
+  "IVAC",
+  "McKing",
+  "McKinsey",
+  "Red Cross",
+  "SCIDAR",
   "Sydani Group",
-  "Others",
+  "TaskForce for Global Health",
+  "UNICEF",
+  "USCDC",
+  "WHO",
+  // "Others (Specify)"
 ];
+
 const typeOfSupportOptions = [
   { name: "Technical Support", details: {} },
   { name: "Funding", details: {} },
@@ -252,6 +274,24 @@ const updateThematicOther = (event, areaName, subAreaTemplate) => {
   }
 };
 
+const otherPartner = ref("");
+
+const updatePartnerOther = (event) => {
+  const otherPartIndex = formData.List_the_Partners.findIndex(
+    (p) => p === otherPartner.value
+  );
+
+  if (otherPartIndex > -1) {
+    formData.List_the_Partners[otherPartIndex] = event.target.value;
+  } else {
+    formData.List_the_Partners.push(event.target.value);
+  }
+
+  otherPartner.value = event.target.value;
+
+  console.log("partners: ", formData.List_the_Partners);
+};
+
 const addStatesTag = async (newTag) => {
   const tag = {
     name: newTag,
@@ -268,8 +308,25 @@ const addLgasTag = async (newTag) => {
   formData.LGA_supported.values.push(tag);
 };
 
+// const isValidForm = ref(false);
+const formErrors = ref({});
+
+const err = (field) => {
+  if (formErrors.value.hasOwnProperty(field)) {
+    return formErrors.value[field];
+  }
+
+  return false;
+};
+
 const submitForm = async () => {
   const formJsonData = JSON.parse(JSON.stringify(formData));
+  const validate = validateFormData(formJsonData);
+  if (validate.isValid === false) {
+    formErrors.value = validate.errors;
+    // return;
+  }
+  // console.log("validation: ", rm);
   const record = await pb.collection("rsmp_data").create(formJsonData);
   console.log("FormData: ", formJsonData);
   const successMessage = document.getElementById("successMessage");
@@ -331,41 +388,6 @@ onMounted(async () => {
 <template>
   <div>
     <div class="form-container">
-      <!-- Step Indicator -->
-      <!-- <div class="step-indicator-container">
-      <div class="step-indicator-line"></div>
-      <div
-        class="step"
-        :class="{ active: currentStep === 1, completed: currentStep > 1 }"
-        >1</div
-      >
-      <div
-        class="step"
-        :class="{ active: currentStep === 2, completed: currentStep > 2 }"
-        >2</div
-      >
-      <div
-        class="step"
-        :class="{ active: currentStep === 3, completed: currentStep > 3 }"
-        >3</div
-      >
-      <div
-        class="step"
-        :class="{ active: currentStep === 4, completed: currentStep > 4 }"
-        >4</div
-      >
-      <div
-        class="step"
-        :class="{ active: currentStep === 5, completed: currentStep > 5 }"
-        >5</div
-      >
-      <div
-        class="step"
-        :class="{ active: currentStep === 6, completed: currentStep > 6 }"
-        >6</div
-      >
-      <div class="step" :class="{ active: currentStep === 7 }">7</div>
-    </div> -->
       <div class="progress mb-4" style="height: 20px" v-if="currentStep > 0">
         <div
           class="progress-bar"
@@ -380,7 +402,6 @@ onMounted(async () => {
       </div>
 
       <form @submit.prevent="submitForm">
-        <!-- Step 1: Welcome -->
         <div
           class="form-step welcome-step"
           :class="{ active: currentStep === 0 }"
@@ -423,9 +444,17 @@ onMounted(async () => {
             <input
               type="text"
               class="form-control"
+              :class="err('Name_of_Respondent') ? 'is-invalid' : ''"
               id="Name_of_Respondent"
               v-model="formData.Name_of_Respondent"
             />
+
+            <div
+              class="invalid-feedback d-block"
+              v-if="err('Name_of_Respondent')"
+            >
+              {{ err("Name_of_Respondent") }}
+            </div>
           </div>
 
           <div class="row">
@@ -1016,6 +1045,14 @@ onMounted(async () => {
                 </div>
               </div>
             </div>
+            <div class="mb-3 mt-3 col-md-6">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Others (Specify)"
+                @change="updatePartnerOther($event)"
+              />
+            </div>
           </div>
         </div>
 
@@ -1076,7 +1113,7 @@ body {
   border-radius: 1rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   /* width: 100%; */
-  min-width: 50vw;
+  min-width: 55vw;
   max-width: 800px;
   margin-top: 2rem;
   margin-bottom: 2rem;
