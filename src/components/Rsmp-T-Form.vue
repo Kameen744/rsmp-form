@@ -1,3 +1,311 @@
+<script setup>
+import { ref, reactive, computed, onMounted } from "vue";
+import PocketBase from "pocketbase";
+import Multiselect from "vue-multiselect";
+
+// const pb = new PocketBase("http://127.0.0.1:8090");
+const pb = new PocketBase("https://pb-api.resourcetrackr.com");
+// const collectionName = "rsmp_data";
+const currentStep = ref(0);
+const totalSteps = 6; // Increased total steps
+const progress = computed(() => (currentStep.value / totalSteps) * 100);
+
+const states = ref([]);
+const lgas = ref([]);
+const selectedState = ref("");
+const selectedStates = ref([]);
+const selectedLgas = ref([]);
+
+const formData = reactive({
+  Name_of_Respondent: "",
+  Designation_of_respondent: "",
+  Name_of_Organization_Agency: "",
+  Type_of_Organization_Agency: "",
+  Start_date_of_support: "",
+  End_date_of_support: "",
+  Status_of_support: "Not started",
+  Level_of_support: [],
+  States_supported: [],
+  LGA_supported: [],
+  Campaign_Focus: [],
+  Campaign_Focus_Other: "",
+  Type_of_Support: [],
+  Who_is_the_Funder_of_your_project: "",
+  Thematic_areas_supported: [],
+  Key_Performance_Indicators: "",
+  Are_you_collaborating_with_any_other_partners: "No",
+  List_the_Partners: [],
+});
+
+const campaignFocusOptions = [
+  "Measles Rubella",
+  "Polio",
+  "HPV",
+  "NTDs",
+  "Malaria",
+  "Nutrition",
+  "Routine Immunization",
+];
+const partnerOptions = [
+  "UNICEF",
+  "WHO",
+  "USCDC",
+  "AFFENET",
+  "Red Cross",
+  "IVAC",
+  "C-WINS",
+  "e-Health Africa",
+  "SCIDAR",
+  "GRID3",
+  "CHAI",
+  "McKinsey",
+  "McKing",
+  "Acasus",
+  "Sydani Group",
+  "Others",
+];
+const typeOfSupportOptions = [
+  { name: "Technical Support", details: {} },
+  { name: "Funding", details: {} },
+  { name: "Provision of Commodities", details: {} },
+];
+const thematicAreasOptions = [
+  {
+    area: "Planning and Coordination",
+    sub_areas: [
+      "Microplanning",
+      "Technical Working Group",
+      "Readiness dashboard",
+      "Other: ",
+    ],
+  },
+  {
+    area: "Service Delivery",
+    sub_areas: [
+      "Training",
+      "Health workers’ team deployment",
+      "Supportive supervision",
+      "Other: ",
+    ],
+  },
+  {
+    area: "ACSM",
+    sub_areas: [
+      "Program Advocacy",
+      "Media Advocacy",
+      "Risk and Crisis communication",
+      "Social Mobilization",
+      "Other: ",
+    ],
+  },
+  {
+    area: "MERLA",
+    sub_areas: [
+      "Data Management",
+      "Research",
+      "Knowledge management and learning",
+      "Other: ",
+    ],
+  },
+  {
+    area: "Cold chain/Logistics",
+    sub_areas: [
+      "Vaccine and commodities deployment",
+      "Waste Management",
+      "Transportation",
+      "Other: ",
+    ],
+  },
+  {
+    area: "Finance",
+    sub_areas: [
+      "Donor",
+      "Payments - Social Mobilization",
+      "Payments - Training",
+      "Payments - Logistics",
+      "Payments - Vaccination Teams",
+      "Other: ",
+    ],
+  },
+  { area: "Surveillance", sub_areas: ["AEFI", "Other: "] },
+];
+
+const nextStep = () => {
+  if (currentStep.value < totalSteps) currentStep.value++;
+};
+
+const prevStep = () => {
+  if (currentStep.value > 0) currentStep.value--;
+};
+
+const updateStates = (event) => {
+  const states = event.target.value
+    .split(",")
+    .map((s) => s.trim())
+    .filter((s) => s);
+  formData.States_supported = states.map((state) => ({ state }));
+};
+
+const updateLGAs = (event) => {
+  const lgas = event.target.value
+    .split(";")
+    .map((l) => l.trim())
+    .filter((l) => l);
+  formData.LGA_supported = lgas.map((lga) => {
+    const [state, lgaName] = lga.split(",").map((s) => s.trim());
+    return { state, lga: lgaName };
+  });
+};
+
+const toggleSupport = (supportType) => {
+  const index = formData.Type_of_Support.findIndex(
+    (s) => s.support_type === supportType
+  );
+  if (index > -1) {
+    formData.Type_of_Support.splice(index, 1);
+  } else {
+    let newSupport = { support_type: supportType };
+    if (supportType === "Technical Support") {
+      newSupport.personnel_deployed = false;
+      newSupport.number_of_personnel = 0;
+      newSupport.deployment_states = [];
+    }
+    if (supportType === "Funding") {
+      newSupport.organizations_funded = [];
+    }
+    if (supportType === "Provision of Commodities") {
+      newSupport.commodities_supplied = [];
+    }
+    formData.Type_of_Support.push(newSupport);
+  }
+};
+
+const isSupportSelected = (supportType) => {
+  return formData.Type_of_Support.some((s) => s.support_type === supportType);
+};
+
+const getSupport = (supportType) => {
+  return formData.Type_of_Support.find((s) => s.support_type === supportType);
+};
+
+const updateDeploymentStates = (event) => {
+  const support = getSupport("Technical Support");
+  if (support) {
+    support.deployment_states = event.target.value
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s);
+  }
+};
+
+const updateFundedOrgs = (event) => {
+  const support = getSupport("Funding");
+  if (support) {
+    support.organizations_funded = event.target.value
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s);
+  }
+};
+
+const updateCommodities = (event) => {
+  const support = getSupport("Provision of Commodities");
+  if (support) {
+    support.commodities_supplied = event.target.value
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s);
+  }
+};
+
+const toggleThematicArea = (areaName) => {
+  const index = formData.Thematic_areas_supported.findIndex(
+    (a) => a.area === areaName
+  );
+  if (index > -1) {
+    formData.Thematic_areas_supported.splice(index, 1);
+  } else {
+    formData.Thematic_areas_supported.push({ area: areaName, sub_areas: [] });
+  }
+};
+
+const isThematicAreaSelected = (areaName) => {
+  return formData.Thematic_areas_supported.some((a) => a.area === areaName);
+};
+
+const getThematicArea = (areaName) => {
+  return formData.Thematic_areas_supported.find((a) => a.area === areaName);
+};
+
+const updateThematicOther = (event, areaName, subAreaTemplate) => {
+  const area = getThematicArea(areaName);
+  if (area) {
+    const otherIndex = area.sub_areas.findIndex((sa) =>
+      sa.startsWith("Other:")
+    );
+    if (otherIndex > -1) {
+      area.sub_areas.splice(otherIndex, 1);
+    }
+    area.sub_areas.push(`Other: ${event.target.value}`);
+  }
+};
+
+const addStatesTag = async (newTag) => {
+  const tag = {
+    name: newTag,
+    code: newTag.substring(0, 2) + Math.floor(Math.random() * 10000000),
+  };
+  formData.States_supported.values.push(tag);
+};
+
+const addLgasTag = async (newTag) => {
+  const tag = {
+    name: newTag,
+    code: newTag.substring(0, 2) + Math.floor(Math.random() * 10000000),
+  };
+  formData.LGA_supported.values.push(tag);
+};
+
+const submitForm = async () => {
+  const formJsonData = JSON.parse(JSON.stringify(formData));
+  const record = await pb.collection("rsmp_data").create(formJsonData);
+  console.log("Form data to be submitted:", record);
+  const successMessage = document.getElementById("successMessage");
+  if (successMessage) successMessage.style.display = "block";
+
+  setTimeout(() => {
+    if (successMessage) successMessage.style.display = "none";
+    currentStep.value = 1;
+
+    Object.keys(formData).forEach((key) => {
+      if (Array.isArray(formData[key])) {
+        formData[key] = [];
+      } else if (typeof formData[key] === "string") {
+        formData[key] = "";
+      }
+    });
+    formData.Status_of_support = "Not started";
+    formData.Are_you_collaborating_with_any_other_partners = "No";
+  }, 5000);
+};
+
+const getLgas = async (stateName) => {
+  selectedState.value = stateName;
+  lgas.value = await pb.collection("lga").getFullList({
+    fields: "state,lga",
+    filter: `state="${stateName}"`,
+  });
+};
+
+onMounted(async () => {
+  states.value = await pb.collection("state").getFullList({
+    fields: "state",
+  });
+
+  // console.log(states.value);
+});
+</script>
+
 <template>
   <div>
     <div class="form-container">
@@ -224,6 +532,70 @@
               />
               <label class="form-check-label" for="state">State</label>
             </div>
+            <!-- mutli select form for state -->
+            <!-- <div v-if="formData.Level_of_support.includes('State')" class="mb-3"
+              ><label class="typo__label">States Supported</label>
+              <Multiselect
+                id="multiselect"
+                v-model="formData.Level_of_support"
+                :options="states"
+                :multiple="true"
+                :close-on-select="false"
+                :clear-on-select="false"
+                :preserve-search="true"
+                placeholder="Pick States"
+                open-direction="bottom"
+                label="state"
+                track-by="state"
+                :preselect-first="true"
+              >
+                <template #selection="{ values, search, isOpen }">
+                  <span
+                    class="multiselect__single"
+                    v-if="values.length"
+                    v-show="!isOpen"
+                    >{{ values.length }} options selected</span
+                  >
+                </template>
+              </Multiselect>
+
+              <div
+                class="btn-group mt-1"
+                role="group"
+                aria-label="Basic checkbox toggle button group"
+              >
+                <label
+                  class="btn btn-sm btn-outline-primary"
+                  v-for="lvs in formData.Level_of_support"
+                  >{{ lvs.state }}</label
+                >
+              </div>
+            </div> -->
+            <div
+              v-if="formData.Level_of_support.includes('State')"
+              class="mb-3 mt-3"
+              ><label class="typo__label">
+                <small>States Supported</small>
+              </label>
+              <multiselect
+                id="tagging"
+                v-model="formData.States_supported"
+                tag-placeholder="Add this as supported state"
+                placeholder="Search or add supported state"
+                label="state"
+                track-by="state"
+                :options="states"
+                :multiple="true"
+                :close-on-select="false"
+                :clear-on-select="false"
+                :preserve-search="true"
+                :max-height="200"
+                :taggable="true"
+                open-direction="bottom"
+              ></multiselect>
+            </div>
+
+            <!-- end multiselect for state -->
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -235,7 +607,7 @@
               <label class="form-check-label" for="lga">LGA</label>
             </div>
           </div>
-          <div v-if="formData.Level_of_support.includes('State')" class="mb-3">
+          <!-- <div v-if="formData.Level_of_support.includes('State')" class="mb-3">
             <label class="form-label">States Supported</label>
             <input
               type="text"
@@ -243,8 +615,8 @@
               placeholder="Enter states, comma separated"
               @change="updateStates"
             />
-          </div>
-          <div v-if="formData.Level_of_support.includes('LGA')" class="mb-3">
+          </div> -->
+          <!-- <div v-if="formData.Level_of_support.includes('LGA')" class="mb-3">
             <label class="form-label"
               >LGAs Supported (format: State,LGA; State,LGA)</label
             >
@@ -254,6 +626,50 @@
               placeholder="e.g., Kaduna,Zaria; Lagos,Ikeja"
               @change="updateLGAs"
             />
+          </div> -->
+          <div
+            v-if="formData.Level_of_support.includes('LGA')"
+            class="mb-3 mt-3"
+            ><label class="typo__label">
+              <small>LGAs Supported</small>
+            </label>
+            <multiselect
+              id="tagging"
+              v-model="formData.LGA_supported"
+              tag-placeholder="Add supported LGA"
+              placeholder="Search or add supported LGA"
+              label="lga"
+              track-by="lga"
+              :options="lgas"
+              :multiple="true"
+              :close-on-select="false"
+              :clear-on-select="false"
+              :preserve-search="true"
+              :max-height="200"
+              :taggable="true"
+              open-direction="bottom"
+            ></multiselect>
+            <div
+              class="btn-group mt-1"
+              role="group"
+              aria-label="Basic checkbox toggle button group"
+            >
+              <template v-for="lvs in formData.States_supported">
+                <!-- <input
+                  type="checkbox"
+                  class="btn-check"
+                  :checked="selectedState == lvs.state"
+                  :id="lvs.state"
+                  autocomplete="off"
+                /> -->
+                <label
+                  class="btn btn-sm btn-outline-primary"
+                  :for="lvs.state"
+                  @click="getLgas(lvs.state)"
+                  >{{ lvs.state }}</label
+                >
+              </template>
+            </div>
           </div>
         </div>
 
@@ -547,7 +963,7 @@
           >
           <button
             type="submit"
-            class="btn btn-success"
+            class="btn btn-primary"
             v-if="currentStep === totalSteps"
             >Submit</button
           >
@@ -565,277 +981,7 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref, reactive, computed } from "vue";
-import PocketBase from "pocketbase";
-
-// const pb = new PocketBase("http://127.0.0.1:8090");
-const pb = new PocketBase("https://pb-api.resourcetrackr.com");
-const collectionName = "rsmp_data";
-
-const currentStep = ref(0);
-const totalSteps = 6; // Increased total steps
-const progress = computed(() => (currentStep.value / totalSteps) * 100);
-
-const formData = reactive({
-  Name_of_Respondent: "",
-  Designation_of_respondent: "",
-  Name_of_Organization_Agency: "",
-  Type_of_Organization_Agency: "",
-  Start_date_of_support: "",
-  End_date_of_support: "",
-  Status_of_support: "Not started",
-  Level_of_support: [],
-  States_supported: [],
-  LGA_supported: [],
-  Campaign_Focus: [],
-  Campaign_Focus_Other: "",
-  Type_of_Support: [],
-  Who_is_the_Funder_of_your_project: "",
-  Thematic_areas_supported: [],
-  Key_Performance_Indicators: "",
-  Are_you_collaborating_with_any_other_partners: "No",
-  List_the_Partners: [],
-});
-
-const campaignFocusOptions = [
-  "Measles Rubella",
-  "Polio",
-  "HPV",
-  "NTDs",
-  "Malaria",
-  "Nutrition",
-  "Routine Immunization",
-];
-const partnerOptions = [
-  "UNICEF",
-  "WHO",
-  "USCDC",
-  "AFFENET",
-  "Red Cross",
-  "IVAC",
-  "C-WINS",
-  "e-Health Africa",
-  "SCIDAR",
-  "GRID3",
-  "CHAI",
-  "McKinsey",
-  "McKing",
-  "Acasus",
-  "Sydani Group",
-  "Others",
-];
-const typeOfSupportOptions = [
-  { name: "Technical Support", details: {} },
-  { name: "Funding", details: {} },
-  { name: "Provision of Commodities", details: {} },
-];
-const thematicAreasOptions = [
-  {
-    area: "Planning and Coordination",
-    sub_areas: [
-      "Microplanning",
-      "Technical Working Group",
-      "Readiness dashboard",
-      "Other: ",
-    ],
-  },
-  {
-    area: "Service Delivery",
-    sub_areas: [
-      "Training",
-      "Health workers’ team deployment",
-      "Supportive supervision",
-      "Other: ",
-    ],
-  },
-  {
-    area: "ACSM",
-    sub_areas: [
-      "Program Advocacy",
-      "Media Advocacy",
-      "Risk and Crisis communication",
-      "Social Mobilization",
-      "Other: ",
-    ],
-  },
-  {
-    area: "MERLA",
-    sub_areas: [
-      "Data Management",
-      "Research",
-      "Knowledge management and learning",
-      "Other: ",
-    ],
-  },
-  {
-    area: "Cold chain/Logistics",
-    sub_areas: [
-      "Vaccine and commodities deployment",
-      "Waste Management",
-      "Transportation",
-      "Other: ",
-    ],
-  },
-  {
-    area: "Finance",
-    sub_areas: [
-      "Donor",
-      "Payments - Social Mobilization",
-      "Payments - Training",
-      "Payments - Logistics",
-      "Payments - Vaccination Teams",
-      "Other: ",
-    ],
-  },
-  { area: "Surveillance", sub_areas: ["AEFI", "Other: "] },
-];
-
-const nextStep = () => {
-  if (currentStep.value < totalSteps) currentStep.value++;
-};
-
-const prevStep = () => {
-  if (currentStep.value > 0) currentStep.value--;
-};
-
-const updateStates = (event) => {
-  const states = event.target.value
-    .split(",")
-    .map((s) => s.trim())
-    .filter((s) => s);
-  formData.States_supported = states.map((state) => ({ state }));
-};
-
-const updateLGAs = (event) => {
-  const lgas = event.target.value
-    .split(";")
-    .map((l) => l.trim())
-    .filter((l) => l);
-  formData.LGA_supported = lgas.map((lga) => {
-    const [state, lgaName] = lga.split(",").map((s) => s.trim());
-    return { state, lga: lgaName };
-  });
-};
-
-const toggleSupport = (supportType) => {
-  const index = formData.Type_of_Support.findIndex(
-    (s) => s.support_type === supportType
-  );
-  if (index > -1) {
-    formData.Type_of_Support.splice(index, 1);
-  } else {
-    let newSupport = { support_type: supportType };
-    if (supportType === "Technical Support") {
-      newSupport.personnel_deployed = false;
-      newSupport.number_of_personnel = 0;
-      newSupport.deployment_states = [];
-    }
-    if (supportType === "Funding") {
-      newSupport.organizations_funded = [];
-    }
-    if (supportType === "Provision of Commodities") {
-      newSupport.commodities_supplied = [];
-    }
-    formData.Type_of_Support.push(newSupport);
-  }
-};
-
-const isSupportSelected = (supportType) => {
-  return formData.Type_of_Support.some((s) => s.support_type === supportType);
-};
-
-const getSupport = (supportType) => {
-  return formData.Type_of_Support.find((s) => s.support_type === supportType);
-};
-
-const updateDeploymentStates = (event) => {
-  const support = getSupport("Technical Support");
-  if (support) {
-    support.deployment_states = event.target.value
-      .split(",")
-      .map((s) => s.trim())
-      .filter((s) => s);
-  }
-};
-
-const updateFundedOrgs = (event) => {
-  const support = getSupport("Funding");
-  if (support) {
-    support.organizations_funded = event.target.value
-      .split(",")
-      .map((s) => s.trim())
-      .filter((s) => s);
-  }
-};
-
-const updateCommodities = (event) => {
-  const support = getSupport("Provision of Commodities");
-  if (support) {
-    support.commodities_supplied = event.target.value
-      .split(",")
-      .map((s) => s.trim())
-      .filter((s) => s);
-  }
-};
-
-const toggleThematicArea = (areaName) => {
-  const index = formData.Thematic_areas_supported.findIndex(
-    (a) => a.area === areaName
-  );
-  if (index > -1) {
-    formData.Thematic_areas_supported.splice(index, 1);
-  } else {
-    formData.Thematic_areas_supported.push({ area: areaName, sub_areas: [] });
-  }
-};
-
-const isThematicAreaSelected = (areaName) => {
-  return formData.Thematic_areas_supported.some((a) => a.area === areaName);
-};
-
-const getThematicArea = (areaName) => {
-  return formData.Thematic_areas_supported.find((a) => a.area === areaName);
-};
-
-const updateThematicOther = (event, areaName, subAreaTemplate) => {
-  const area = getThematicArea(areaName);
-  if (area) {
-    const otherIndex = area.sub_areas.findIndex((sa) =>
-      sa.startsWith("Other:")
-    );
-    if (otherIndex > -1) {
-      area.sub_areas.splice(otherIndex, 1);
-    }
-    area.sub_areas.push(`Other: ${event.target.value}`);
-  }
-};
-
-const submitForm = async () => {
-  const formJsonData = JSON.parse(JSON.stringify(formData));
-  const record = await pb.collection("rsmp_data").create(formJsonData);
-  console.log("Form data to be submitted:", record);
-  const successMessage = document.getElementById("successMessage");
-  if (successMessage) successMessage.style.display = "block";
-
-  setTimeout(() => {
-    if (successMessage) successMessage.style.display = "none";
-    currentStep.value = 1;
-
-    Object.keys(formData).forEach((key) => {
-      if (Array.isArray(formData[key])) {
-        formData[key] = [];
-      } else if (typeof formData[key] === "string") {
-        formData[key] = "";
-      }
-    });
-    formData.Status_of_support = "Not started";
-    formData.Are_you_collaborating_with_any_other_partners = "No";
-  }, 5000);
-};
-</script>
-
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
 body {
   font-family: "Inter", sans-serif;
