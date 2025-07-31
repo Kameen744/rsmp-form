@@ -95,6 +95,68 @@ const typeOfSupportOptions = [
   { name: "Funding", details: {} },
   { name: "Provision of Commodities", details: {} },
 ];
+
+// const thematicAreasOptions = [
+//   {
+//     area: "Planning and Coordination",
+//     sub_areas: [
+//       "Microplanning",
+//       "Technical Working Group",
+//       "Readiness dashboard",
+//       "Other: ",
+//     ],
+//   },
+//   {
+//     area: "Service Delivery",
+//     sub_areas: [
+//       "Training",
+//       "Health workers’ team deployment",
+//       "Supportive supervision",
+//       "Other: ",
+//     ],
+//   },
+//   {
+//     area: "ACSM",
+//     sub_areas: [
+//       "Program Advocacy",
+//       "Media Advocacy",
+//       "Risk and Crisis communication",
+//       "Social Mobilization",
+//       "Other: ",
+//     ],
+//   },
+//   {
+//     area: "MERLA (Monitoring, Evaluation, Research, Learning and Accountability)",
+//     sub_areas: [
+//       "Data Management",
+//       "Research",
+//       "Knowledge management and learning",
+//       "Other: ",
+//     ],
+//   },
+//   {
+//     area: "Cold chain/Logistics",
+//     sub_areas: [
+//       "Vaccine and commodities deployment",
+//       "Waste Management",
+//       "Transportation",
+//       "Other: ",
+//     ],
+//   },
+//   {
+//     area: "Finance",
+//     sub_areas: [
+//       "Donor",
+//       "Payments - Social Mobilization",
+//       "Payments - Training",
+//       "Payments - Logistics",
+//       "Payments - Vaccination Teams",
+//       "Other: ",
+//     ],
+//   },
+//   { area: "Surveillance", sub_areas: ["AEFI", "Other: "] },
+// ];
+
 const thematicAreasOptions = [
   {
     area: "Planning and Coordination",
@@ -104,15 +166,19 @@ const thematicAreasOptions = [
       "Readiness dashboard",
       "Other: ",
     ],
+    kpi: "",
+    support_level: [],
   },
   {
     area: "Service Delivery",
     sub_areas: [
       "Training",
-      "Health workers’ team deployment",
+      "Health workers' team deployment",
       "Supportive supervision",
       "Other: ",
     ],
+    kpi: "",
+    support_level: [],
   },
   {
     area: "ACSM",
@@ -123,6 +189,8 @@ const thematicAreasOptions = [
       "Social Mobilization",
       "Other: ",
     ],
+    kpi: "",
+    support_level: [],
   },
   {
     area: "MERLA (Monitoring, Evaluation, Research, Learning and Accountability)",
@@ -132,6 +200,8 @@ const thematicAreasOptions = [
       "Knowledge management and learning",
       "Other: ",
     ],
+    kpi: "",
+    support_level: [],
   },
   {
     area: "Cold chain/Logistics",
@@ -141,6 +211,8 @@ const thematicAreasOptions = [
       "Transportation",
       "Other: ",
     ],
+    kpi: "",
+    support_level: [],
   },
   {
     area: "Finance",
@@ -152,8 +224,15 @@ const thematicAreasOptions = [
       "Payments - Vaccination Teams",
       "Other: ",
     ],
+    kpi: "",
+    support_level: [],
   },
-  { area: "Surveillance", sub_areas: ["AEFI", "Other: "] },
+  {
+    area: "Surveillance",
+    sub_areas: ["AEFI", "Other: "],
+    kpi: "",
+    support_level: [],
+  },
 ];
 
 const step_1_rq_fields = [
@@ -319,7 +398,27 @@ const toggleThematicArea = (areaName) => {
   if (index > -1) {
     formData.Thematic_areas_supported.splice(index, 1);
   } else {
-    formData.Thematic_areas_supported.push({ area: areaName, sub_areas: [] });
+    formData.Thematic_areas_supported.push({
+      area: areaName,
+      sub_areas: [],
+      kpi: "",
+      support_level: [],
+    });
+  }
+};
+
+const toggleThematicAreaLevel = (areaName, support) => {
+  const idx = formData.Thematic_areas_supported.findIndex(
+    (a) => a.area === areaName
+  );
+
+  const sptIdx =
+    formData.Thematic_areas_supported[idx].support_level.indexOf(support);
+
+  if (sptIdx !== -1) {
+    formData.Thematic_areas_supported[idx].support_level[sptIdx] = support;
+  } else {
+    formData.Thematic_areas_supported[idx].support_level.push(support);
   }
 };
 
@@ -342,6 +441,14 @@ const updateThematicOther = (event, areaName, subAreaTemplate) => {
     }
     area.sub_areas.push(`Other: ${event.target.value}`);
   }
+};
+
+const updateThematicOtherKpi = (event, areaName) => {
+  const idx = formData.Thematic_areas_supported.findIndex(
+    (a) => a.area === areaName
+  );
+
+  formData.Thematic_areas_supported[idx].kpi = event.target.value;
 };
 
 const otherPartner = ref("");
@@ -427,7 +534,7 @@ const submitForm = async () => {
     });
     formData.Status_of_support = "Not started";
     formData.Are_you_collaborating_with_any_other_partners = "No";
-  }, 5000);
+  }, 3000);
 };
 
 const getLgas = async () => {
@@ -1060,7 +1167,7 @@ onMounted(async () => {
                   v-for="(sub, subIndex) in theme.sub_areas"
                   :key="subIndex"
                 >
-                  <div class="form-check">
+                  <div class="form-check" v-if="!sub.startsWith('Other:')">
                     <input
                       class="form-check-input"
                       type="checkbox"
@@ -1081,6 +1188,64 @@ onMounted(async () => {
                     placeholder="Others (Please Specify)"
                     @change="updateThematicOther($event, theme.area, sub)"
                   />
+                </div>
+              </div>
+              <div class="row mt-4">
+                <hr />
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">Key Performance Indicators *</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm mt-1"
+                    placeholder="Type KPIs here"
+                    @change="updateThematicOtherKpi($event, theme.area)"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Level of Support *</label>
+                  <div class="d-flex justify-content-between">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        :id="`${theme.area}-nationalspt`"
+                        @change="
+                          toggleThematicAreaLevel(theme.area, 'National')
+                        "
+                      />
+                      <label
+                        class="form-check-label h6"
+                        :for="`${theme.area}-nationalspt`"
+                        >National</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        :id="`${theme.area}-statespt`"
+                        @change="toggleThematicAreaLevel(theme.area, 'States')"
+                      />
+                      <label
+                        class="form-check-label h6"
+                        :for="`${theme.area}-statespt`"
+                        >States</label
+                      >
+                    </div>
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        :id="`${theme.area}-lgaspt`"
+                        @change="toggleThematicAreaLevel(theme.area, 'LGAs')"
+                      />
+                      <label
+                        class="form-check-label h6"
+                        :for="`${theme.area}-lgaspt`"
+                        >LGAs</label
+                      >
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
