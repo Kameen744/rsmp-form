@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import { ref, reactive, computed, onMounted, watch } from "vue";
 import PocketBase from "pocketbase";
 import Multiselect from "vue-multiselect";
 import validateFormData from "../functions";
@@ -565,6 +565,29 @@ function isValidEmail(email) {
   return emailRegex.test(email);
 }
 
+// change start
+
+// Count words utility
+const countWords = (text) => {
+  if (!text || !text.trim()) return 0;
+  return text.trim().split(/\s+/).length;
+};
+
+// Watch the textarea input
+watch(
+  () => formData.Summary_of_Support,
+  (newVal) => {
+    const wordCount = countWords(newVal);
+    if (wordCount > 200) {
+      // Trim to first 200 words
+      const trimmed = newVal.trim().split(/\s+/).slice(0, 200).join(" ");
+      formData.Summary_of_Support = trimmed;
+    }
+  }
+);
+
+// change end
+
 onMounted(async () => {
   states.value = await pb.collection("state").getFullList({
     fields: "state",
@@ -650,7 +673,7 @@ onMounted(async () => {
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label for="Name_of_Respondent" class="form-label"
+              <label for="Phone_Number_of_Respondent" class="form-label"
                 >Phone Number of Respondent *</label
               >
               <input
@@ -658,7 +681,7 @@ onMounted(async () => {
                 type="text"
                 class="form-control"
                 :class="err('Phone_Number_of_Respondent') ? 'is-invalid' : ''"
-                id="Name_of_Respondent"
+                id="Phone_Number_of_Respondent"
                 v-model="formData.Phone_Number_of_Respondent"
               />
               <div
@@ -669,7 +692,7 @@ onMounted(async () => {
               </div>
             </div>
             <div class="col-md-6 mb-3">
-              <label for="Name_of_Respondent" class="form-label"
+              <label for="Email_Address_of_Respondent" class="form-label"
                 >Email Address of Respondent *</label
               >
               <input
@@ -677,7 +700,7 @@ onMounted(async () => {
                 type="email"
                 class="form-control"
                 :class="err('Email_Address_of_Respondent') ? 'is-invalid' : ''"
-                id="Name_of_Respondent"
+                id="Email_Address_of_Respondent"
                 v-model="formData.Email_Address_of_Respondent"
               />
               <div
@@ -1351,7 +1374,7 @@ onMounted(async () => {
           <h4>Step {{ currentStep }}: Summary of Support</h4>
           <div class="mb-3">
             <label for="Key_Performance_Indicators" class="form-label"
-              >Summary of Support *</label
+              >Summary of Support (max of 200 words) *</label
             >
             <textarea
               class="form-control"
@@ -1360,6 +1383,10 @@ onMounted(async () => {
               v-model="formData.Summary_of_Support"
               placeholder="The information provided here will be displayed as a synopsis of your support for the integrated campaign."
             ></textarea>
+
+            <small class="text-muted d-block">
+              {{ countWords(formData.Summary_of_Support) }} / 200 words
+            </small>
 
             <div
               class="invalid-feedback d-block"
