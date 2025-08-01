@@ -572,13 +572,13 @@ const countWords = (text) => {
   if (!text || !text.trim()) return 0;
   return text.trim().split(/\s+/).length;
 };
-
+const wordCount = ref(0);
 // Watch the textarea input
 watch(
   () => formData.Summary_of_Support,
   (newVal) => {
-    const wordCount = countWords(newVal);
-    if (wordCount > 200) {
+    wordCount.value = countWords(newVal);
+    if (wordCount.value > 200) {
       // Trim to first 200 words
       const trimmed = newVal.trim().split(/\s+/).slice(0, 200).join(" ");
       formData.Summary_of_Support = trimmed;
@@ -1385,7 +1385,7 @@ onMounted(async () => {
             ></textarea>
 
             <small class="text-muted d-block">
-              {{ countWords(formData.Summary_of_Support) }} / 200 words
+              {{ wordCount }} / 200 words
             </small>
 
             <div
