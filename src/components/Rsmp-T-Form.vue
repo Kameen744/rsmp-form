@@ -1447,6 +1447,7 @@ body {
   align-items: flex-start; /* Align to top to see full form */
   min-height: 100vh;
   padding: 1rem;
+  padding-top: 0px;
 }
 .form-container {
   background-color: white;
@@ -1456,8 +1457,9 @@ body {
   /* width: 100%; */
   min-width: 55vw;
   max-width: 800px;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  min-height: 100vh;
+  /* margin-top: 2rem; */
+  /* margin-bottom: 2rem; */
 }
 .form-step {
   display: none;
