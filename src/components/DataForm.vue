@@ -23,7 +23,7 @@ const selectedState = ref("");
 const selectedStates = ref([]);
 const selectedLgas = ref([]);
 const mainFormRef = ref("");
-console.log(authUser.value.record);
+// console.log(authUser.value.record);
 const formData = reactive({
   Name_of_Respondent: authUser.value.record.name,
   Phone_Number_of_Respondent: authUser.value.record.phone_number,
