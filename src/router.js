@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import * as localForage from "localforage";
 import RsmpRegister from "./components/Rsmp-Register.vue";
-import RsmpTForm from "./components/Rsmp-T-Form.vue";
 import NewLogin from "./components/NewLogin.vue";
 import RsmpDashboard from "./components/Rsmp-Dashboard.vue";
 
@@ -15,11 +14,6 @@ const routes = [
     path: "/register",
     name: "register",
     component: RsmpRegister,
-  },
-  {
-    path: "/form",
-    name: "form",
-    component: RsmpTForm,
   },
   {
     path: "/home",

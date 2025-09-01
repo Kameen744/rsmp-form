@@ -43,14 +43,26 @@ const formData = reactive({
 });
 
 const campaignFocusOptions = [
-  "Measles Rubella",
-  "Polio",
+  "HCE",
   "HPV",
-  "NTDs",
   "Malaria",
+  "Measles Rubella",
+  "NTDs",
   "Nutrition",
+  "Polio",
   "Routine Immunization",
 ];
+
+//  = [
+//   "Measles Rubella",
+//   "Polio",
+//   "HPV",
+//   "NTDs",
+//   "Malaria",
+//   "Nutrition",
+//   "HCE",
+//   "Routine Immunization",
+// ];
 // const partnerOptions = [
 //   "UNICEF",
 //   "WHO",
@@ -599,10 +611,15 @@ onMounted(async () => {
 
 <template>
   <div class="">
-    <div class="progress mb-4" style="height: 20px" v-if="currentStep > 0">
+    <div
+      class="progress bg-info mb-4"
+      style="height: 20px"
+      v-if="currentStep > 0"
+    >
       <div
         class="progress-bar"
         role="progressbar"
+        style="background-color: #1f3559; margin: 0px; height: 100%"
         :style="{ width: progress + '%' }"
         :aria-valuenow="progress"
         aria-valuemin="0"
@@ -1427,6 +1444,9 @@ body {
   min-height: 100vh;
   padding: 1rem;
   padding-top: 0px;
+}
+.btn-primary {
+  background-color: #1f3559 !important;
 }
 .form-container {
   background-color: white;
