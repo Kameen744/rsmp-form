@@ -1,8 +1,8 @@
 <template>
   <!-- Floating Background Shapes -->
+  <!-- <div class="bg-shape"></div>
   <div class="bg-shape"></div>
-  <div class="bg-shape"></div>
-  <div class="bg-shape"></div>
+  <div class="bg-shape"></div> -->
 
   <div class="login-container">
     <!-- Logo Section -->
@@ -248,6 +248,7 @@ body::before {
   box-shadow: var(--shadow-xl);
   position: relative;
   z-index: 10;
+  align-self: center;
   animation: slideUp 0.8s ease;
 }
 
