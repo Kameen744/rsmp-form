@@ -7,8 +7,13 @@
   <div class="login-container">
     <!-- Logo Section -->
     <div class="logo">
-      <h1>Sign In</h1>
-      <p>Welcome back to your dashboard</p>
+      <h1>
+        <img :src="logo" class=" w-100"></img>
+      </h1>
+      <small class=" text-white">
+        Integrated Measles-Rubella Campaign Resource Tracker
+      </small>
+      <hr>
     </div>
 
     <!-- Login Form -->
@@ -76,6 +81,7 @@ import PocketBase from "pocketbase";
 import { useAdminStore } from "./../stores/admin-store";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
+import logo from "./../assets/ResourceTrackerlogo.png"
 
 const router = useRouter();
 const store = useAdminStore();
@@ -123,7 +129,7 @@ const handleLogin = async () => {
 }
 
 :root {
-  --primary: #6366f1;
+  --primary: #1F3559;
   --primary-dark: #4f46e5;
   --secondary: #8b5cf6;
   --accent: #06b6d4;
@@ -231,7 +237,8 @@ body::before {
 
 /* Login Container */
 .login-container {
-  background: rgba(255, 255, 255, 0.95);
+  background: #1F3559;
+  color: #e2e8f0;
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 24px;
@@ -258,10 +265,11 @@ body::before {
 /* Logo */
 .logo {
   text-align: center;
-  margin-bottom: 3rem;
+  padding: 0px;
+  margin-bottom: 2rem;
 }
 
-.logo h1 {
+/* .logo h1 {
   font-size: 2.5rem;
   font-weight: 700;
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -269,7 +277,7 @@ body::before {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
-}
+} */
 
 .logo p {
   color: var(--gray);
@@ -291,7 +299,7 @@ body::before {
   display: block;
   margin-bottom: 0.75rem;
   font-weight: 600;
-  color: var(--dark);
+  color: var(--white);
   font-size: 0.95rem;
 }
 

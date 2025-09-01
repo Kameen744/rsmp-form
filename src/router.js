@@ -2,7 +2,6 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import * as localForage from "localforage";
 import RsmpRegister from "./components/Rsmp-Register.vue";
 import RsmpTForm from "./components/Rsmp-T-Form.vue";
-import LoginPage from "./components/Login-Page.vue";
 import NewLogin from "./components/NewLogin.vue";
 import RsmpDashboard from "./components/Rsmp-Dashboard.vue";
 
