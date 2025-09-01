@@ -4,6 +4,12 @@ import PocketBase from "pocketbase";
 import Multiselect from "vue-multiselect";
 import validateFormData from "../functions";
 
+import { useAdminStore } from "./../stores/admin-store";
+import { storeToRefs } from "pinia";
+
+const store = useAdminStore();
+const { isLoading, authUser, records, view } = storeToRefs(store);
+
 // const pb = new PocketBase("http://127.0.0.1:8090");
 const pb = new PocketBase("https://pb-api.resourcetrackr.com");
 // const collectionName = "rsmp_data";
@@ -17,13 +23,13 @@ const selectedState = ref("");
 const selectedStates = ref([]);
 const selectedLgas = ref([]);
 const mainFormRef = ref("");
-
+console.log(authUser.value.record);
 const formData = reactive({
-  Name_of_Respondent: "",
-  Phone_Number_of_Respondent: "",
-  Email_Address_of_Respondent: "",
+  Name_of_Respondent: authUser.value.record.name,
+  Phone_Number_of_Respondent: authUser.value.record.phone_number,
+  Email_Address_of_Respondent: authUser.value.record.email,
   Designation_of_respondent: "",
-  Name_of_Organization_Agency: "",
+  Name_of_Organization_Agency: authUser.value.record.organization_name,
   Type_of_Organization_Agency: "",
   Start_date_of_support: "",
   End_date_of_support: "",
@@ -671,6 +677,7 @@ onMounted(async () => {
             >Name of Respondent *</label
           >
           <input
+            disabled
             required
             type="text"
             class="form-control"
@@ -693,6 +700,7 @@ onMounted(async () => {
               >Phone Number of Respondent *</label
             >
             <input
+              disabled
               required
               type="text"
               class="form-control"
@@ -712,6 +720,7 @@ onMounted(async () => {
               >Email Address of Respondent *</label
             >
             <input
+              disabled
               required
               type="email"
               class="form-control"
@@ -725,6 +734,27 @@ onMounted(async () => {
             >
               {{ err("Email_Address_of_Respondent") }}
             </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="Name_of_Organization_Agency" class="form-label"
+            >Name of Organization/Agency *</label
+          >
+          <input
+            disabled
+            required
+            type="text"
+            class="form-control"
+            :class="err('Name_of_Organization_Agency') ? 'is-invalid' : ''"
+            id="Name_of_Organization_Agency"
+            v-model="formData.Name_of_Organization_Agency"
+          />
+          <div
+            class="invalid-feedback d-block"
+            v-if="err('Name_of_Organization_Agency')"
+          >
+            {{ err("Name_of_Organization_Agency") }}
           </div>
         </div>
 
@@ -745,26 +775,6 @@ onMounted(async () => {
             v-if="err('Designation_of_respondent')"
           >
             {{ err("Designation_of_respondent") }}
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label for="Name_of_Organization_Agency" class="form-label"
-            >Name of Organization/Agency *</label
-          >
-          <input
-            required
-            type="text"
-            class="form-control"
-            :class="err('Name_of_Organization_Agency') ? 'is-invalid' : ''"
-            id="Name_of_Organization_Agency"
-            v-model="formData.Name_of_Organization_Agency"
-          />
-          <div
-            class="invalid-feedback d-block"
-            v-if="err('Name_of_Organization_Agency')"
-          >
-            {{ err("Name_of_Organization_Agency") }}
           </div>
         </div>
         <div class="mb-3">

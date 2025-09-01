@@ -37,7 +37,7 @@ const getPaginatedData = async (pagination = null) => {
         sort: "-created",
       });
 
-    console.log(result);
+    // console.log(result);
     currentPage.value = result.page;
     pageSize.value = result.perPage;
     totalRows.value = result.totalItems;
