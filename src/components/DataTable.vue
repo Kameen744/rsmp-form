@@ -3,9 +3,14 @@ import { ref, onMounted } from "vue";
 import Vue3Datatable from "@bhplugin/vue3-datatable";
 import DataView from "./DataView.vue";
 import "@bhplugin/vue3-datatable/dist/style.css";
-
+import { useAdminStore } from "./../stores/admin-store";
+import { storeToRefs } from "pinia";
 import PocketBase from "pocketbase";
 const pb = new PocketBase("https://pb-api.resourcetrackr.com");
+
+const store = useAdminStore();
+const { isLoading, authUser, records, view, selectedMarker } =
+  storeToRefs(store);
 
 const tabLoading = ref(false);
 const totalRows = ref(0);
@@ -18,6 +23,7 @@ const rows = ref([]);
 const handleUpdateTableLoader = (val) => {
   tabLoading.value = val;
 };
+
 const getPaginatedData = async (pagination = null) => {
   tabLoading.value = true;
   if (pagination) {
@@ -99,18 +105,8 @@ const formatDate = (inputDate) => {
   return formattedDate;
 };
 
-const selectedRow = ref(null);
-const dialogRef = ref(null);
-
 const handleRowClick = (rowData) => {
-  selectedRow.value = rowData;
-  console.log(selectedRow.value);
-  // table_data_modal.showModal();
-  // dialogRef.value.showModal();
-};
-
-const closePopup = () => {
-  table_data_modal.hideModal();
+  selectedMarker.value = rowData;
 };
 
 onMounted(() => {
@@ -118,24 +114,13 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div>
-    <dialog id="table_data_modal" ref="dialogRef" class="modal">
-      <div class="modal-box min-w-[40vw] p-0">
-        <DataView
-          @UpdateTableLoader="handleUpdateTableLoader"
-          v-if="selectedRow"
-          :selectedMarker="selectedRow"
-        ></DataView>
-      </div>
-      <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-      </form>
-    </dialog>
-  </div>
-  <div
-    class="max-h-[89vh] min-h-[89vh] mt-4 min-w-[92vw] max-w-[92vw] overflow-y-auto"
-  >
+  <div class="dash-container">
+    <DataView
+      @UpdateTableLoader="handleUpdateTableLoader"
+      v-if="selectedMarker"
+    ></DataView>
     <vue3-datatable
+      v-else
       :rows="rows"
       :columns="cols"
       :loading="tabLoading"
@@ -153,4 +138,8 @@ onMounted(() => {
     </vue3-datatable>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+/* .dash-container {
+  background-color: red;
+} */
+</style>

@@ -1,7 +1,7 @@
 <template>
   <div class="form-container" ref="mainFormRefRegister">
     <h2 class="text-3xl font-bold text-center text-gray-800 mb-6"
-      >Partner Registration</h2
+      >Registration</h2
     >
     <hr />
     <form>

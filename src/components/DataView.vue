@@ -1,234 +1,200 @@
 <template>
-  <!-- <div
-    class="z-[9999] fixed top-[11vh] max-h-[90vh] min-w-[500px] max-w-[500px] right-2 flex bg-transparent p-0 overflow-x-auto"
-  >
-  
-    <div class="max-w-5xl mx-auto p-4">
-      
-    </div>
-  </div> -->
-  <div class="bg-white shadow-lg rounded-xl p-6 space-y-6">
-    <!-- Respondent Info -->
-    <!-- <div>
-          <h2 class="text-xl font-semibold mb-2">Respondent Info</h2>
-          <div class="grid sm:grid-cols-2 gap-4">
-            <p><span class="font-medium">Name:</span> Obiora Ezebilo</p>
-            <p
-              ><span class="font-medium">Designation:</span> Health
-              Specialist</p
-            >
-            <p><span class="font-medium">Phone:</span> 08036766888</p>
-            <p><span class="font-medium">Email:</span> oezebilo@unicef.org</p>
-            
-            <p
-              ><span class="font-medium">Organization:</span>
-              {{ selectedMarker.Name_of_Organization_Agency }}</p
-            >
-            <p
-              ><span class="font-medium">Type:</span
-              >{{ selectedMarker.Type_of_Organization_Agency[0] }}</p
-            >
-          </div>
-        </div> -->
-
+  <div class="p-2 pt-0">
     <!-- Support Info -->
-    <div>
-      <div class="flex justify-between items-center">
-        <div class="text-xl font-semibold p-0 m-0">
-          <strong>Support Info</strong>
+    <div class="mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <button class="btn btn-sm btn-primary" @click="store.closePopup">
+            Back to list
+          </button>
         </div>
-        <div class="">
-          <label class="label">
-            <input
-              type="checkbox"
-              @change="enableAndDisableRec(selectedMarker)"
-              :checked="selectedMarker.approved"
-              class="toggle toggle-success"
-            />
-            <b class="ml-2">
-              {{ selectedMarker.approved ? "Visible" : "Hidden" }}
-            </b>
-          </label>
+        <div class="h4 fw-semibold p-0 m-0">
+          <div>Support Info</div>
+        </div>
+        <div>
+          <button class="btn btn-sm btn-info" @click="store.editRecord">
+            Edit record
+          </button>
         </div>
       </div>
       <hr />
-      <div class="grid sm:grid-cols-2 gap-4 mt-3">
-        <p
-          ><span class="font-medium">Organization: </span>
-          {{ selectedMarker.Name_of_Organization_Agency }}</p
-        >
-        <p
-          ><span class="font-medium">Type: </span
-          >{{ selectedMarker.Type_of_Organization_Agency[0] }}</p
-        >
-        <!-- <p
-              ><span class="font-medium">Start Date: </span>
-              {{ store.formatDate(selectedMarker.Start_date_of_support) }}</p
-            >
-            <p
-              ><span class="font-medium">End Date: </span>
-              {{ store.formatDate(selectedMarker.End_date_of_support) }}</p
-            > -->
-        <!-- <p
-              ><span class="font-medium">Status: </span
-              >{{ statusNameChange(selectedMarker.Status_of_support) }}</p
-            > -->
-        <p
-          ><span class="font-medium">Collaborating with other partners: </span>
-          {{ selectedMarker.Are_you_collaborating_with_any_other_partners }}</p
-        >
-        <p
-          ><span class="font-medium">Funder: </span
-          >{{ selectedMarker.Who_is_the_Funder_of_your_project }}</p
-        >
+      <div class="row g-3 mt-2">
+        <div class="col-sm-6">
+          <p
+            ><span class="fw-medium">Organization: </span>
+            {{ selectedMarker.Name_of_Organization_Agency }}</p
+          >
+        </div>
+        <div class="col-sm-6">
+          <p
+            ><span class="fw-medium">Type: </span>
+            {{ selectedMarker.Type_of_Organization_Agency[0] }}</p
+          >
+        </div>
+        <div class="col-sm-6">
+          <p
+            ><span class="fw-medium">Collaborating with other partners: </span>
+            {{
+              selectedMarker.Are_you_collaborating_with_any_other_partners
+            }}</p
+          >
+        </div>
+        <div class="col-sm-6">
+          <p
+            ><span class="fw-medium">Funder: </span>
+            {{ selectedMarker.Who_is_the_Funder_of_your_project }}</p
+          >
+        </div>
       </div>
     </div>
 
     <!-- Campaign Focus -->
-    <div>
-      <h2 class="text-xl font-semibold mb-2">Campaign Focus</h2>
-      <div class="flex flex-wrap gap-2">
+    <div class="mb-4">
+      <h2 class="h4 fw-semibold mb-2">Campaign Focus</h2>
+      <div class="d-flex flex-wrap gap-2">
         <span
           v-for="focus in selectedMarker.Campaign_Focus"
-          class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+          class="badge text-bg-primary px-3 py-2 rounded-pill"
           >{{ focus }}</span
         >
       </div>
     </div>
 
     <!-- Summary -->
-    <div>
-      <h2 class="text-xl font-semibold mb-2">Summary of Support</h2>
-      <p class="text-gray-700">
+    <div class="mb-4">
+      <h2 class="h4 fw-semibold mb-2">Summary of Support</h2>
+      <p class="text-muted">
         {{ limtString(selectedMarker.Summary_of_Support, 300) }}
       </p>
     </div>
 
     <!-- Partners -->
-    <div>
-      <h2 class="text-xl font-semibold mb-2">List of Partners</h2>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+    <div class="mb-4">
+      <h2 class="h4 fw-semibold mb-2">List of Partners</h2>
+      <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-2">
         <!-- Repeat below for each partner -->
-        <span
-          v-for="patner in selectedMarker.List_the_Partners"
-          class="text-sm bg-gray-100 px-3 py-1 rounded-md"
-        >
-          {{ patner }}
-        </span>
+        <div v-for="patner in selectedMarker.List_the_Partners" class="col">
+          <span class="badge text-bg-light px-3 py-2 d-block text-center">
+            {{ patner }}
+          </span>
+        </div>
       </div>
     </div>
 
     <!-- States Supported -->
-    <div>
-      <h2 class="text-xl font-semibold mb-2">States Supported</h2>
-      <div class="flex flex-wrap gap-2">
+    <div class="mb-4">
+      <h2 class="h4 fw-semibold mb-2">States Supported</h2>
+      <div class="d-flex flex-wrap gap-2">
         <span
           v-for="state in selectedMarker.States_supported"
-          class="text-sm bg-green-100 text-green-700 px-2 py-1 rounded"
+          class="badge text-bg-success px-2 py-1"
           >{{ state.state }}</span
         >
       </div>
     </div>
 
-    <div>
-      <h2 class="text-xl font-semibold mb-2">LGA's Supported</h2>
-      <div class="flex flex-wrap gap-2">
+    <div class="mb-4">
+      <h2 class="h4 fw-semibold mb-2">LGA's Supported</h2>
+      <div class="d-flex flex-wrap gap-2">
         <span
           v-for="lga in selectedMarker.LGA_supported"
-          class="text-sm bg-green-100 text-green-700 px-2 py-1 rounded"
+          class="badge text-bg-success px-2 py-1"
           >{{ lga.lga }}</span
         >
       </div>
     </div>
 
     <!-- Thematic Areas -->
-    <div>
-      <h2 class="text-xl font-semibold mb-4">Thematic Areas Supported</h2>
-      <div class="space-y-4">
+    <div class="mb-4">
+      <h2 class="h4 fw-semibold mb-3">Thematic Areas Supported</h2>
+      <div class="d-grid gap-3">
         <!-- Repeat for each thematic area -->
         <div
           v-for="area in selectedMarker.Thematic_areas_supported"
-          class="bg-gray-50 rounded-md p-4"
+          class="card bg-light"
         >
-          <h3 class="font-semibold mb-2">{{ area.area }}</h3>
-          <div class="text-sm mb-1"
-            ><strong>Sub-areas:</strong>
-            <div class="flex">
-              <span
-                class="p-1 m-1 rounded-md bg-slate-200"
-                v-for="sub in area.sub_areas"
-                >{{ sub }}</span
-              >
+          <div class="card-body">
+            <h3 class="h5 fw-semibold mb-2">{{ area.area }}</h3>
+            <div class="small mb-2">
+              <strong>Sub-areas:</strong>
+              <div class="d-flex flex-wrap mt-1">
+                <span
+                  class="badge bg-secondary me-1 mb-1"
+                  v-for="sub in area.sub_areas"
+                  >{{ sub }}</span
+                >
+              </div>
             </div>
-          </div>
 
-          <div class="text-sm"
-            ><strong>Support Levels:</strong>
-            <div class="flex">
-              <span
-                class="p-1 m-1 rounded-md bg-slate-200"
-                v-for="level in area.support_level"
-                >{{ level }}</span
-              >
+            <div class="small mb-2">
+              <strong>Support Levels:</strong>
+              <div class="d-flex flex-wrap mt-1">
+                <span
+                  class="badge bg-secondary me-1 mb-1"
+                  v-for="level in area.support_level"
+                  >{{ level }}</span
+                >
+              </div>
             </div>
+            <p v-if="area.kpi != ''" class="small mb-0">
+              <strong>KPI:</strong> {{ area.kpi }}
+            </p>
           </div>
-          <p v-if="area.kpi != ''" class="text-sm"
-            ><strong>KPI:</strong>{{ area.kpi }}</p
-          >
         </div>
         <!-- ... repeat for other areas -->
       </div>
     </div>
 
     <!-- Type of Support -->
-    <div>
-      <h2 class="text-xl font-semibold mb-2">Type of Support</h2>
-      <div class="space-y-1 text-sm text-gray-800">
+    <div class="mb-4">
+      <h2 class="h4 fw-semibold mb-2">Type of Support</h2>
+      <div class="d-grid gap-2 small text-dark">
         <div v-for="tps in selectedMarker.Type_of_Support">
           <p
             ><strong>{{ tps.support_type }}</strong></p
           >
-          <p v-if="tps?.number_of_personnel">
-            Number of personel deployed: {{ tps.number_of_personnel }}</p
-          >
+          <p v-if="tps?.number_of_personnel" class="mb-2">
+            Number of personel deployed: {{ tps.number_of_personnel }}
+          </p>
 
-          <div v-if="tps?.organizations_funded">
+          <div v-if="tps?.organizations_funded" class="mb-2">
             Organizations:
-            <div class="flex">
+            <div class="d-flex flex-wrap mt-1">
               <span
-                class="p-1 m-1 rounded-md bg-slate-200"
+                class="badge bg-secondary me-1 mb-1"
                 v-for="org in tps.organizations_funded"
                 >{{ org }}</span
               >
             </div>
           </div>
 
-          <div v-if="tps?.commodities_supplied">
+          <div v-if="tps?.commodities_supplied" class="mb-2">
             Commodities Supplied:
-            <div class="flex">
+            <div class="d-flex flex-wrap mt-1">
               <span
-                class="p-1 m-1 rounded-md bg-slate-200"
+                class="badge bg-secondary me-1 mb-1"
                 v-for="com in tps.commodities_supplied"
                 >{{ com }}</span
               >
             </div>
           </div>
-
-          <hr />
           <hr />
         </div>
-        <!-- <li><strong>Funding:</strong> Gavi</li>
-            <li><strong>Provision of Commodities:</strong> NA</li> -->
       </div>
     </div>
   </div>
 </template>
 <script setup>
 import PocketBase from "pocketbase";
-const pb = new PocketBase("https://pb-api.resourcetrackr.com");
 import { onMounted, ref } from "vue";
+import { useAdminStore } from "./../stores/admin-store";
+import { storeToRefs } from "pinia";
 
-const emit = defineEmits(["updateTableLoader"]);
+const store = useAdminStore();
+const pb = new PocketBase("https://pb-api.resourcetrackr.com");
+
+const { isLoading, authUser, records, view, selectedMarker } =
+  storeToRefs(store);
 
 const listOfSuports = ref(new Set());
 const collapseKey = ref(null);
@@ -264,26 +230,26 @@ const verifySpList = (spName) => {
 //   return sp.bg;
 // };
 
-const props = defineProps({
-  selectedMarker: {
-    type: Object,
-    default: {},
-  },
-});
+// const props = defineProps({
+//   selectedMarker: {
+//     type: Object,
+//     default: {},
+//   },
+// });
 
-const enableAndDisableRec = async (rec) => {
-  emit("updateTableLoader", true);
+// const enableAndDisableRec = async (rec) => {
+//   emit("updateTableLoader", true);
 
-  if (rec.approved) {
-    rec.approved = false;
-  } else {
-    rec.approved = true;
-  }
-  const r = await pb.collection(rec.collectionName).update(rec.id, rec);
+//   if (rec.approved) {
+//     rec.approved = false;
+//   } else {
+//     rec.approved = true;
+//   }
+//   const r = await pb.collection(rec.collectionName).update(rec.id, rec);
 
-  emit("updateTableLoader", false);
-  // location.reload();
-};
+//   emit("updateTableLoader", false);
+//   // location.reload();
+// };
 
 onMounted(() => {});
 </script>

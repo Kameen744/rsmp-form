@@ -8,11 +8,9 @@ import { useAdminStore } from "./../stores/admin-store";
 import { storeToRefs } from "pinia";
 
 const store = useAdminStore();
-const { isLoading, authUser, records, view } = storeToRefs(store);
-
-// const pb = new PocketBase("http://127.0.0.1:8090");
+const { isLoading, authUser, records, view, selectedMarker, emptyFormData } =
+  storeToRefs(store);
 const pb = new PocketBase("https://pb-api.resourcetrackr.com");
-// const collectionName = "rsmp_data";
 const currentStep = ref(0);
 const totalSteps = 7; // Increased total steps
 const progress = computed(() => (currentStep.value / totalSteps) * 100);
@@ -24,7 +22,7 @@ const selectedStates = ref([]);
 const selectedLgas = ref([]);
 const mainFormRef = ref("");
 // console.log(authUser.value.record);
-const formData = reactive({
+let formData = reactive({
   Name_of_Respondent: authUser.value.record.name,
   Phone_Number_of_Respondent: authUser.value.record.phone_number,
   Email_Address_of_Respondent: authUser.value.record.email,
@@ -604,15 +602,58 @@ watch(
   }
 );
 
-// change end
+const cancelUpdate = () => {
+  // selectedMarker.value = null;
+  view.value = "records";
+};
 
 onMounted(async () => {
   states.value = await pb.collection("state").getFullList({
     fields: "state",
   });
 
-  // console.log(states.value);
+  if (selectedMarker.value) {
+    currentStep.value = 1;
+    formData.Name_of_Respondent = selectedMarker.value.Name_of_Respondent;
+    formData.Phone_Number_of_Respondent =
+      selectedMarker.value.Phone_Number_of_Respondent;
+    formData.Email_Address_of_Respondent =
+      selectedMarker.value.Email_Address_of_Respondent;
+    formData.Designation_of_respondent =
+      selectedMarker.value.Designation_of_respondent;
+    formData.Name_of_Organization_Agency =
+      selectedMarker.value.Name_of_Organization_Agency;
+    formData.Type_of_Organization_Agency =
+      selectedMarker.value.Type_of_Organization_Agency;
+    formData.Start_date_of_support = store.formatDateForInput(
+      selectedMarker.value.Start_date_of_support
+    );
+    formData.End_date_of_support = store.formatDateForInput(
+      selectedMarker.value.End_date_of_support
+    );
+    formData.Status_of_support = selectedMarker.value.Status_of_support;
+    formData.Level_of_support = selectedMarker.value.Level_of_support;
+    formData.States_supported = selectedMarker.value.States_supported;
+    formData.LGA_supported = selectedMarker.value.LGA_supported;
+    formData.Campaign_Focus = selectedMarker.value.Campaign_Focus;
+    formData.Campaign_Focus_Other = selectedMarker.value.Campaign_Focus_Other;
+    formData.Type_of_Support = selectedMarker.value.Type_of_Support;
+    formData.Who_is_the_Funder_of_your_project =
+      selectedMarker.value.Who_is_the_Funder_of_your_project;
+    formData.Thematic_areas_supported =
+      selectedMarker.value.Thematic_areas_supported;
+    formData.Key_Performance_Indicators =
+      selectedMarker.value.Key_Performance_Indicators;
+    formData.Are_you_collaborating_with_any_other_partners =
+      selectedMarker.value.Are_you_collaborating_with_any_other_partners;
+    formData.List_the_Partners = selectedMarker.value.List_the_Partners;
+    formData.Summary_of_Support = selectedMarker.value.Summary_of_Support;
+  }
 });
+
+const checkType = (tp) => {
+  return formData.Type_of_Organization_Agency == tp;
+};
 </script>
 
 <template>
@@ -795,7 +836,12 @@ onMounted(async () => {
               autocomplete="off"
               v-model="formData.Type_of_Organization_Agency"
             />
-            <label class="btn btn-outline-primary" for="donor">Donor</label>
+            <label
+              class="btn btn-outline-primary"
+              for="donor"
+              :class="{ 'bg-info': checkType('Donor') }"
+              >Donor</label
+            >
 
             <input
               type="radio"
@@ -806,7 +852,12 @@ onMounted(async () => {
               autocomplete="off"
               v-model="formData.Type_of_Organization_Agency"
             />
-            <label class="btn btn-outline-primary" for="funder">Funder</label>
+            <label
+              class="btn btn-outline-primary"
+              for="funder"
+              :class="{ 'bg-info': checkType('Funder') }"
+              >Funder</label
+            >
 
             <input
               type="radio"
@@ -817,7 +868,10 @@ onMounted(async () => {
               autocomplete="off"
               v-model="formData.Type_of_Organization_Agency"
             />
-            <label class="btn btn-outline-primary" for="implementing"
+            <label
+              class="btn btn-outline-primary"
+              for="implementing"
+              :class="{ 'bg-info': checkType('Implementing Partner') }"
               >Implementing Partner</label
             >
 
@@ -830,7 +884,10 @@ onMounted(async () => {
               autocomplete="off"
               v-model="formData.Type_of_Organization_Agency"
             />
-            <label class="btn btn-outline-primary" for="government"
+            <label
+              class="btn btn-outline-primary"
+              for="government"
+              :class="{ 'bg-info': checkType('Government') }"
               >Government</label
             >
           </div>
@@ -1406,14 +1463,25 @@ onMounted(async () => {
 
       <!-- Navigation Buttons -->
       <div class="d-flex justify-content-between mt-5">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          v-if="currentStep > 0"
-          @click="prevStep"
-          :disabled="currentStep === 0"
-          >Previous</button
-        >
+        <div v-if="currentStep > 0">
+          <button
+            type="button"
+            v-if="selectedMarker"
+            class="btn btn-secondary"
+            @click="cancelUpdate"
+            :disabled="currentStep === 0"
+            >Cancel Update</button
+          >
+          <button
+            type="button"
+            v-else
+            class="btn btn-secondary"
+            @click="prevStep"
+            :disabled="currentStep === 0"
+            >Previous</button
+          >
+        </div>
+
         <div v-else></div>
         <button
           type="button"
@@ -1426,8 +1494,9 @@ onMounted(async () => {
           type="submit"
           class="btn btn-primary"
           v-if="currentStep === totalSteps"
-          >Submit</button
         >
+          {{ selectedMarker ? "Update" : "Submit" }}
+        </button>
       </div>
     </form>
 

@@ -96,10 +96,10 @@
       </header>
 
       <main class="main fade-in">
-        <div class="page-header" v-if="view == 'records'">
+        <!-- <div class="page-header" v-if="view == 'records'">
           <h1 class="page-title">Dashboard Overview</h1>
           <p class="page-subtitle">Welcome back!</p>
-        </div>
+        </div> -->
 
         <!-- <div class="stats-grid">
           <div class="stat-card hover-lift">
@@ -285,7 +285,7 @@
           </template>
         </div> -->
         <DataTable v-if="view == 'records'"></DataTable>
-        <DataForm v-if="view == 'form'"></DataForm>
+        <DataForm v-if="view == 'form'" :key="dataFormKey"></DataForm>
 
         <!-- <div class="card">
           <div class="card-header">
@@ -350,11 +350,15 @@ import DataTable from "./DataTable.vue";
 const pbUrl = "https://pb-api.resourcetrackr.com";
 const pb = new PocketBase(pbUrl);
 const store = useAdminStore();
-const { isLoading, authUser, records, view } = storeToRefs(store);
+const { isLoading, authUser, records, view, selectedMarker, dataFormKey } =
+  storeToRefs(store);
 
 const changeView = (v) => {
+  selectedMarker.value = null;
   view.value = v;
+  dataFormKey.value = Math.random();
 };
+
 onMounted(async () => {
   isLoading.value = false;
   await store.getUser();
@@ -422,8 +426,9 @@ body {
   min-width: 100vw;
   padding: 0px;
   margin: 0px;
-  padding-right: 20px;
+  padding-right: 0px;
   transition: var(--transition);
+  overflow: hidden;
 }
 
 /* Mobile Toggle */
@@ -599,8 +604,9 @@ body {
 /* Main Content */
 .main {
   grid-area: main;
-  padding: 2rem;
+  padding: 1rem;
   overflow-y: auto;
+  max-height: 95vh;
 }
 
 .page-header {
