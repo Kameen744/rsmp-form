@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100 h-100 m-0 p-0">
+  <div class="w-100 h-100 m-0 p-0" v-if="authUser?.record">
     <input
       type="checkbox"
       id="mobile-menu-toggle"
@@ -26,10 +26,11 @@
     <div class="container">
       <aside class="sidebar">
         <div class="logo">
-          <h1>{{ authUser?.record.name }}</h1>
+          <img :src="logo" class=" w-100"></img>
+          <p><small>{{ authUser?.record.name }}</small></p>
         </div>
         <nav>
-          <ul class="nav-menu">
+          <ul class="nav-menu p-0">
             <li class="nav-item">
               <a
                 href="#"
@@ -40,7 +41,21 @@
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
                 </svg>
-                Dashboard
+                Submissions
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a
+                href="#"
+                class="nav-link"
+                @click="changeView('partSub')"
+                :class="view == 'partSub' ? 'active' : ''"
+              >
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                </svg>
+                My Submissions
               </a>
             </li>
 
@@ -60,7 +75,7 @@
               </a>
             </li>
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a href="#" class="nav-link">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor">
                   <circle cx="12" cy="12" r="3" />
@@ -70,7 +85,7 @@
                 </svg>
                 Settings
               </a>
-            </li>
+            </li> -->
           </ul>
         </nav>
       </aside>
@@ -285,6 +300,7 @@
           </template>
         </div> -->
         <DataTable v-if="view == 'records'"></DataTable>
+        <DataTablePartner v-if="view == 'partSub'"></DataTablePartner>
         <DataForm v-if="view == 'form'" :key="dataFormKey"></DataForm>
 
         <!-- <div class="card">
@@ -346,6 +362,9 @@ import { storeToRefs } from "pinia";
 // import RsmpTForm from "./Rsmp-T-Form.vue";
 import DataForm from "./DataForm.vue";
 import DataTable from "./DataTable.vue";
+import DataTablePartner from "./DataTablePartner.vue";
+
+import logo from "./../assets/ResourceTrackerlogo.png";
 
 const pbUrl = "https://pb-api.resourcetrackr.com";
 const pb = new PocketBase(pbUrl);
@@ -462,7 +481,8 @@ body {
   padding: 2rem 0;
   box-shadow: var(--shadow-lg);
   transition: var(--transition);
-  overflow-y: auto;
+  /* overflow-y: auto; */
+  overflow: hidden;
 }
 
 .logo {

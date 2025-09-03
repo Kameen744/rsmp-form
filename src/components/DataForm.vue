@@ -603,8 +603,8 @@ watch(
 );
 
 const cancelUpdate = () => {
-  // selectedMarker.value = null;
-  view.value = "records";
+  selectedMarker.value = null;
+  view.value = "partSub";
 };
 
 onMounted(async () => {

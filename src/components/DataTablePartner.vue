@@ -48,7 +48,9 @@ const getPaginatedData = async (pagination = null) => {
     //     sort: "-created",
     //   });
 
-    const result = await store.getSubmissions();
+    const result = await store.getSubmissions(
+      authUser.value.record.organization_name
+    );
     // console.log(result);
     currentPage.value = result.page;
     pageSize.value = result.perPage;
@@ -117,6 +119,12 @@ const handleViewButton = (rowData) => {
   selectedMarker.value = rowData.value;
 };
 
+const handleEditButton = (rowData) => {
+  view.value = "form";
+  selectedMarker.value = rowData.value;
+  // store.editRecord;
+};
+
 onMounted(() => {
   getPaginatedData();
 });
@@ -141,13 +149,18 @@ onMounted(() => {
       :selectRowOnClick="true"
       skin="bh-table-hover"
       @change="getPaginatedData"
-      @row-click="handleRowClick"
     >
+      <!-- @row-click="handleRowClick" -->
       <template #actions="data">
         <button
           class="btn btn-sm btn-primary py-1 px-2 m-1"
           @click="handleViewButton(data)"
           >View</button
+        >
+        <button
+          class="btn btn-sm btn-danger py-1 px-2 m-1"
+          @click="handleEditButton(data)"
+          >Edit</button
         >
       </template>
     </vue3-datatable>

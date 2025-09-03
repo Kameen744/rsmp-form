@@ -12,6 +12,11 @@ export const useAdminStore = defineStore("useAdminStore", {
     records: null,
     selectedMarker: null,
     dataFormKey: Math.random(),
+    tabLoading: false,
+    totalRows: 0,
+    currentPage: 1,
+    searchTxt: "",
+    pageSize: 20,
     emptyFormData: {
       Name_of_Respondent: "",
       Phone_Number_of_Respondent: "",
@@ -51,6 +56,25 @@ export const useAdminStore = defineStore("useAdminStore", {
     async setUser(user) {
       await localForage.setItem("authPartnerUser", user);
       this.authUser = user;
+    },
+    async getSubmissions(org = null) {
+      let result;
+      if (org === null) {
+        result = await pb
+          .collection("rsmp_data")
+          .getList(this.currentPage, this.pageSize, {
+            sort: "-created",
+          });
+      } else {
+        result = await pb
+          .collection("rsmp_data")
+          .getList(this.currentPage, this.pageSize, {
+            filter: `Name_of_Organization_Agency='${org}'`,
+            sort: "-created",
+          });
+      }
+
+      return result;
     },
     closePopup() {
       this.selectedMarker = null;

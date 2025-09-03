@@ -94,7 +94,7 @@ const errorMessage = ref("");
 
 const pb = new PocketBase("https://pb-api.resourcetrackr.com");
 const register = () => {
-  console.log("register");
+  // console.log("register");
   router.push({ name: "register" });
 };
 const handleLogin = async () => {
@@ -104,7 +104,7 @@ const handleLogin = async () => {
     const authData = await pb
       .collection("users")
       .authWithPassword(email.value, password.value);
-    store.setUser(authData);
+    await store.setUser(authData);
     router.push({ name: "home" });
   } catch (error) {
     console.error("Login Failed:", error.message);

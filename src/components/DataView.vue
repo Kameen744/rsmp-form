@@ -12,9 +12,13 @@
           <div>Support Info</div>
         </div>
         <div>
-          <button class="btn btn-sm btn-info" @click="store.editRecord">
+          <!-- <button
+            class="btn btn-sm btn-info"
+            @click="store.editRecord"
+            v-if="view == 'partSub'"
+          >
             Edit record
-          </button>
+          </button> -->
         </div>
       </div>
       <hr />
