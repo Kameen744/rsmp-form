@@ -141,8 +141,8 @@ onMounted(() => {
       :selectRowOnClick="true"
       skin="bh-table-hover"
       @change="getPaginatedData"
-      @row-click="handleRowClick"
     >
+      <!-- @row-click="handleRowClick" -->
       <template #actions="data">
         <button
           class="btn btn-sm btn-primary py-1 px-2 m-1"

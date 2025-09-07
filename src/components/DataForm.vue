@@ -532,7 +532,13 @@ const submitForm = async () => {
   }
 
   formErrors.value = {};
-  const record = await pb.collection("rsmp_data").create(formJsonData);
+  if (selectedMarker.value) {
+    const record = await pb
+      .collection("rsmp_data")
+      .update(selectedMarker.value.id, formJsonData);
+  } else {
+    const record = await pb.collection("rsmp_data").create(formJsonData);
+  }
 
   const successMessage = document.getElementById("successMessage");
   if (successMessage) successMessage.style.display = "block";
@@ -676,7 +682,7 @@ const checkType = (tp) => {
       </div>
     </div>
 
-    <form @submit.prevent="submitForm" ref="mainFormRef">
+    <form @submit.prevent="submitForm" ref="mainFormRef" class="p-5">
       <!-- Step 1 -->
       <div
         class="form-step welcome-step"
@@ -1113,7 +1119,7 @@ const checkType = (tp) => {
         <div
           v-for="(support, index) in typeOfSupportOptions"
           :key="index"
-          class="card"
+          class=""
         >
           <div class="card-body">
             <div class="form-check">
@@ -1236,7 +1242,7 @@ const checkType = (tp) => {
         <div
           v-for="(theme, themeIndex) in thematicAreasOptions"
           :key="themeIndex"
-          class="card"
+          class=""
         >
           <div class="card-header">
             <div class="form-check">

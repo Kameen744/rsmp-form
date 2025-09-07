@@ -122,6 +122,7 @@ const handleViewButton = (rowData) => {
 const handleEditButton = (rowData) => {
   view.value = "form";
   selectedMarker.value = rowData.value;
+  // console.log(selectedMarker.value);
   // store.editRecord;
 };
 
