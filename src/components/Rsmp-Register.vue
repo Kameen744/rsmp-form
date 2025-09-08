@@ -1,11 +1,11 @@
 <template>
-  <div class="form-container" ref="mainFormRefRegister">
-    <h2 class="text-3xl font-bold text-center text-gray-800 mb-6"
+  <div class="form-container pt-2" ref="mainFormRefRegister">
+    <h2 class="text-3xl font-bold text-center text-gray-800 mb-2"
       >Registration</h2
     >
     <hr />
     <form>
-      <div class="mb-8 row">
+      <div class="row">
         <!-- <h3 class="text-xl font-semibold text-gray-700 mb-4"
           >Basic User Information</h3
         > -->
@@ -142,7 +142,7 @@
         <transition name="fade">
           <div
             v-if="form.isFocalPerson"
-            class="flex items-start p-4 bg-yellow-50 border border-yellow-200 rounded-md"
+            class="flex items-start p-2 px-4 bg-yellow-50 border border-yellow-200 rounded-md"
           >
             <div class="flex items-center h-5">
               <input
@@ -184,7 +184,7 @@
         </div>
       </div>
 
-      <div class="mb-8 row">
+      <div class="mb-1 row">
         <!-- <h3 class="text-xl font-semibold text-gray-700 mb-4"
           >Coordination & Consent</h3
         > -->
