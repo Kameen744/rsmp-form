@@ -101,6 +101,10 @@ const handleLogin = async () => {
   isLoading.value = true;
   errorMessage.value = "";
   try {
+    if(email.value.includes('demo')) {
+      errorMessage.value = "Demo accounts are not allowed to login.";
+      return;
+    }
     const authData = await pb
       .collection("users")
       .authWithPassword(email.value, password.value);
